@@ -56,7 +56,7 @@
 //    
 //}
 //get请求
-+ (void)GetHttpwithUrl:(NSString *)url parameters:(NSDictionary *)parameters andsuccessBlock:(void(^)(id responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock{
++ (void)GetHttpwithUrl:(NSString *)url parameters:(NSDictionary *)parameters andsuccessBlock:(void(^)(NSDictionary * responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock{
     
             // 1.创建管理者对象
         AFHTTPSessionManager * manager = [HttpRequest sharemanager];
@@ -64,8 +64,12 @@
     [manager GET:url parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
    
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    
-        successBlock(responseObject);
+        NSDictionary * dataDic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        if ([[dataDic objectForKey:@"rc"] integerValue] == 0 || [[dataDic objectForKey:@"rc"] integerValue] == 24) {
+            successBlock(dataDic);
+        }else{
+            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+        }
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
     
@@ -75,7 +79,7 @@
     
 }
 //post请求
-+ (void)PostHttpwithUrl:(NSString *)url andparameters:(NSDictionary *)parameters andProgress:(void(^)(NSProgress *progress))progress andsuccessBlock:(void(^)(id responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock{
++ (void)PostHttpwithUrl:(NSString *)url andparameters:(NSDictionary *)parameters andProgress:(void(^)(NSProgress *progress))progress andsuccessBlock:(void(^)(NSDictionary* responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock{
     
     AFHTTPSessionManager * manager = [HttpRequest sharemanager];
     
@@ -83,17 +87,21 @@
         progress(uploadProgress);
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        successBlock(responseObject);
+        NSDictionary * dataDic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        if ([[dataDic objectForKey:@"rc"] integerValue] == 0 || [[dataDic objectForKey:@"rc"] integerValue] == 24) {
+            successBlock(dataDic);
+        }else{
+            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+        }
+        
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failBlock(error);
      
 
     }];
-    
-
-    
 }
+
 //上传本地文件
 //+ (void)Postlocalfilewithurl:(NSString *)url andparameters:(NSDictionary *)parameters and
 
@@ -111,7 +119,9 @@
     
     
 }
-
++ (void)showAlert{
+    [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"服务器开小差了..." leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+}
 /// 根据指定文本,字体和最大宽度计算尺寸
 + (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxWidth:(CGFloat)width
 {
@@ -121,7 +131,7 @@
     return size;
 }
 //是否是手机号
-+ (BOOL)validateNumber:(NSString *) textString
++ (BOOL)phoneValidateNumber:(NSString *) textString
 {
     NSString* number=@"^1[3|4|5|7|8][0-9]\\d{8}$";
     NSPredicate *numberPre = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",number];

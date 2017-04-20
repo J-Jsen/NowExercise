@@ -17,13 +17,21 @@
 
 @interface HttpRequest : NSObject
 
-+ (void)GetHttpwithUrl:(NSString *)url parameters:(NSDictionary *)parameters andsuccessBlock:(void(^)(id responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock;
++ (void)GetHttpwithUrl:(NSString *)url parameters:(NSDictionary *)parameters andsuccessBlock:(void(^)(NSDictionary * responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock;
 
 
-+ (void)PostHttpwithUrl:(NSString *)url andparameters:(NSDictionary *)parameters andProgress:(void(^)(NSProgress *progress))progress andsuccessBlock:(void(^)(id responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock;
++ (void)PostHttpwithUrl:(NSString *)url andparameters:(NSDictionary *)parameters andProgress:(void(^)(NSProgress *progress))progress andsuccessBlock:(void(^)(NSDictionary * responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock;
 
 + (void)showAlertCatController:(UIViewController *)viewcontroller andmessage:(NSString *)message;
 
 + (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxWidth:(CGFloat)width;
 
+/**
+ 是否是手机号
+
+ @param textString 验证的字符串
+ @return 返回是否
+ */
++ (BOOL)phoneValidateNumber:(NSString *) textString;
++ (void)showAlert;
 @end

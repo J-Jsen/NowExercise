@@ -95,15 +95,21 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     NSLog(@"hadhjsakhd");
-    MBProgressHUD * hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.mode = MBProgressHUDModeText;
-    hud.labelText = @"cehngggg";
-    hud.dimBackground = YES;
-    [hud setColor:MAKA_JIN_COLOR];
-    hud.labelColor = [UIColor blackColor];
-    hud.minSize = CGSizeMake(SCREEN_W * 0.5, HEIGHT_6(90));
-    [hud hide:YES afterDelay:2];
-    
+//    MBProgressHUD * hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//    hud.mode = MBProgressHUDModeAnnularDeterminate;
+//    hud.activityIndicatorColor = [UIColor blueColor];
+//    hud.color = [UIColor blackColor];
+//    hud.labelText = @"cehngggg";
+//    hud.dimBackground = YES;
+//    [hud setColor:MAKA_JIN_COLOR];
+//    hud.labelColor = [UIColor blackColor];
+//    hud.minSize = CGSizeMake(SCREEN_W * 0.5, HEIGHT_6(90));
+//    [hud hide:YES afterDelay:2];
+    [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+    [SVProgressHUD showSuccessWithStatus:@"正在加载"];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+//    [SVProgressHUD showWithStatus:@"正在加载"];
 }
 
 - (void)didReceiveMemoryWarning{

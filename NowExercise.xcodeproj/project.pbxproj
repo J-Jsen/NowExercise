@@ -77,6 +77,7 @@
 		63B41ADD1DB9F33100B7F60D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63B41ADB1DB9F33100B7F60D /* LaunchScreen.storyboard */; };
 		63B41AE71DB9F9A500B7F60D /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63B41AE51DB9F9A500B7F60D /* LoginViewController.m */; };
 		63B41AE81DB9F9A500B7F60D /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63B41AE61DB9F9A500B7F60D /* LoginViewController.xib */; };
+		63BC2E161EA758A700E1BA6A /* NSString+Suger.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BC2E151EA758A700E1BA6A /* NSString+Suger.m */; };
 		63C9AACF1E79343F0004DEE1 /* OrderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C9AACD1E79343F0004DEE1 /* OrderViewController.m */; };
 		63C9AAD01E79343F0004DEE1 /* OrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63C9AACE1E79343F0004DEE1 /* OrderViewController.xib */; };
 		63C9AAD41E79344A0004DEE1 /* UserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C9AAD21E79344A0004DEE1 /* UserViewController.m */; };
@@ -228,6 +229,8 @@
 		63B41AE41DB9F9A500B7F60D /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		63B41AE51DB9F9A500B7F60D /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		63B41AE61DB9F9A500B7F60D /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
+		63BC2E141EA758A700E1BA6A /* NSString+Suger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Suger.h"; sourceTree = "<group>"; };
+		63BC2E151EA758A700E1BA6A /* NSString+Suger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Suger.m"; sourceTree = "<group>"; };
 		63C9AACC1E79343F0004DEE1 /* OrderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderViewController.h; sourceTree = "<group>"; };
 		63C9AACD1E79343F0004DEE1 /* OrderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderViewController.m; sourceTree = "<group>"; };
 		63C9AACE1E79343F0004DEE1 /* OrderViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderViewController.xib; sourceTree = "<group>"; };
@@ -861,6 +864,8 @@
 				639282551E3377AA00187073 /* HttpRequest.m */,
 				632CD9941E486428001AFFDB /* MenuButton.h */,
 				632CD9951E486428001AFFDB /* MenuButton.m */,
+				63BC2E141EA758A700E1BA6A /* NSString+Suger.h */,
+				63BC2E151EA758A700E1BA6A /* NSString+Suger.m */,
 				639B6FB21E96304C002B367D /* UILabel+Suger.h */,
 				639B6FB31E96304C002B367D /* UILabel+Suger.m */,
 				639B6FB51E963453002B367D /* UIImageView+Suger.h */,
@@ -1099,6 +1104,7 @@
 				63E9484B1E83C3100064696E /* IconViewController.m in Sources */,
 				635E0FCF1E5188280027BA53 /* RPRingedPages.m in Sources */,
 				634F9A351E94E2C60066C6DD /* BodyTableViewCell.m in Sources */,
+				63BC2E161EA758A700E1BA6A /* NSString+Suger.m in Sources */,
 				63A12B7D1E8CFF5C00532820 /* SellCell.m in Sources */,
 				639282481E33324400187073 /* VBFDoubleSegment.m in Sources */,
 				635612831E55AE380085DD99 /* AppointmentView.m in Sources */,

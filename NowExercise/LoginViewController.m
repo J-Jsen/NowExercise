@@ -7,8 +7,8 @@
 //
 
 #import "LoginViewController.h"
-
-@interface LoginViewController ()
+#import "NSString+Suger.h"
+@interface LoginViewController ()<UITextFieldDelegate>
 
 @end
 
@@ -44,12 +44,95 @@
 }
 //验证码
 - (IBAction)TestGetCode:(id)sender {
-    [self startWithTime:60 title:@"获取验证码" countDownTitle:@"s后重新获取" countColor:[UIColor grayColor]];
+    if ([HttpRequest phoneValidateNumber:self.numberTF.text]) {
+        [self.SecurityTF resignFirstResponder];
+        /***************网络请求token值*********************/
+        
+        [self startWithTime:60 title:@"获取验证码" countDownTitle:@"s后重新获取" countColor:[UIColor grayColor]];
+        
+    }else{
+        [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+    }
     
 }
 - (IBAction)ChangeRootView:(id)sender {
+    if ([HttpRequest phoneValidateNumber:self.numberTF.text]) {
+        [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+    }else{
+        if (self.SecurityTF.text.length == 0) {
+            [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"验证码不能为空,请重新输入" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+        }else{
+            [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+            [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
+            [SVProgressHUD setStatus:@"正在登录"];
+            [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
+            //2017-4-20
+#warning 登陆
+            
+        }
+    }
     
     self.LoginChangeRootView();
+}
+//网络请求token值
+- (void)getTokenStr{
+    NSString* getTokenUrl = [NSString stringWithFormat:@"%@token/?number=%@", BASEURL, self.numberTF.text];
+    [HttpRequest PostHttpwithUrl:getTokenUrl andparameters:nil andProgress:nil andsuccessBlock:^(NSDictionary * responseObject) {
+        /*
+         请求参数：number=18618265727&timestamp=12456&sign=e1a4b2dd5816ff40d125f836669652eb
+         app_kye = guodongapps
+         number 电话号码， timestamp： 时间戳  sign：签名
+         将 number timestamp sign 参数值排序好 加上 app_key 得到 src_str
+         
+         签名= md5(src_str)
+         */
+        
+        NSMutableArray * tokenArray            = [NSMutableArray array];
+        //用户手机号
+        NSString* photoNumber = self.numberTF.text;
+        
+        //当前时间戳
+        NSString* timeString  = [NSString stringWithFormat:@"%ld",
+                                 (long)[[NSDate date] timeIntervalSince1970]];
+        // 将手机号和时间戳放入token数组
+        [tokenArray addObject:photoNumber];
+        [tokenArray addObject:timeString];
+        // 接收token值
+        if ([[responseObject allKeys] containsObject:@"token"]) {
+            NSString *token = [responseObject objectForKey:@"token"];
+            [tokenArray addObject:token];
+        }
+        // 数组排序
+        NSMutableArray *sortedArray = (NSMutableArray *)[tokenArray sortedArrayUsingSelector:@selector(compare:)];
+        // 遍历数组 将数组元素组成字符串
+        NSString *sortedString = @"";
+        for (int a = 0; a < [sortedArray count]; a++) {
+            NSString *string = [sortedArray objectAtIndex:a];
+            sortedString     = [NSString stringWithFormat:@"%@%@",sortedString,string];
+        }
+        
+        NSString *tokenString = [NSString stringWithFormat:@"%@guodongapps",sortedString];
+        NSString *MDString    = [tokenString md5:tokenString];
+        
+        
+        /***************网络请求验证码*********************/
+        
+        NSString* getMessageUrl = [NSString stringWithFormat:@"%@sendcode/", BASEURL];
+        NSDictionary* messagedict = @{ @"number" : self.numberTF.text,
+                                       @"sign" : MDString,
+                                       @"time" : timeString
+                                       };
+        [HttpRequest PostHttpwithUrl:getMessageUrl andparameters:messagedict andProgress:nil andsuccessBlock:^(NSDictionary * responseObject) {
+            
+        } andfailBlock:^(NSError *error) {
+            [HttpRequest showAlert];
+        }];
+        
+    } andfailBlock:^(NSError *error) {
+        [HttpRequest showAlert];
+    }];
+    
+
 }
 - (void)startWithTime:(NSInteger)timeLine title:(NSString *)title countDownTitle:(NSString *)subTitle countColor:(UIColor *)color {
     
@@ -65,7 +148,6 @@
         if (timeOut <= 0) {
             dispatch_source_cancel(_timer);
             dispatch_async(dispatch_get_main_queue(), ^{
-                //[self.getCodeBtn setTitle:title forState:UIControlStateNormal];
                 self.getCodeBtn.userInteractionEnabled = YES;
                 self.timeLabel.text = title;
             });
@@ -75,9 +157,7 @@
             NSString *timeStr = [NSString stringWithFormat:@"%0.2d", seconds];
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.getCodeBtn.backgroundColor = color;
-//                [self.getCodeBtn setTitle:[NSString stringWithFormat:@"%@%@",timeStr,subTitle] forState:UIControlStateNormal];
                 self.timeLabel.text = [NSString stringWithFormat:@"%@%@",timeStr,subTitle];
-                
                 self.getCodeBtn.userInteractionEnabled = NO;
             });
             timeOut--;
