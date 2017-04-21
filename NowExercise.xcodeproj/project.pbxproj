@@ -24,6 +24,8 @@
 		634F9A351E94E2C60066C6DD /* BodyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 634F9A331E94E2C60066C6DD /* BodyTableViewCell.m */; };
 		634F9A361E94E2C60066C6DD /* BodyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 634F9A341E94E2C60066C6DD /* BodyTableViewCell.xib */; };
 		635612831E55AE380085DD99 /* AppointmentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 635612821E55AE380085DD99 /* AppointmentView.m */; };
+		635ABB411EA9A2ED0057E656 /* jcore-ios-1.1.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 635ABB3E1EA9A2ED0057E656 /* jcore-ios-1.1.3.a */; };
+		635ABB421EA9A2ED0057E656 /* jpush-ios-3.0.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 635ABB3F1EA9A2ED0057E656 /* jpush-ios-3.0.5.a */; };
 		635E0FCD1E5188280027BA53 /* RPPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E0FC81E5188280027BA53 /* RPPageControl.m */; };
 		635E0FCE1E5188280027BA53 /* RPPagesCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E0FCA1E5188280027BA53 /* RPPagesCarousel.m */; };
 		635E0FCF1E5188280027BA53 /* RPRingedPages.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E0FCC1E5188280027BA53 /* RPRingedPages.m */; };
@@ -133,6 +135,9 @@
 		634F9A341E94E2C60066C6DD /* BodyTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BodyTableViewCell.xib; sourceTree = "<group>"; };
 		635612811E55AE380085DD99 /* AppointmentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppointmentView.h; sourceTree = "<group>"; };
 		635612821E55AE380085DD99 /* AppointmentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppointmentView.m; sourceTree = "<group>"; };
+		635ABB3E1EA9A2ED0057E656 /* jcore-ios-1.1.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-1.1.3.a"; sourceTree = "<group>"; };
+		635ABB3F1EA9A2ED0057E656 /* jpush-ios-3.0.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-3.0.5.a"; sourceTree = "<group>"; };
+		635ABB401EA9A2ED0057E656 /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
 		635E0FC71E5188280027BA53 /* RPPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPPageControl.h; sourceTree = "<group>"; };
 		635E0FC81E5188280027BA53 /* RPPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPPageControl.m; sourceTree = "<group>"; };
 		635E0FC91E5188280027BA53 /* RPPagesCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPPagesCarousel.h; sourceTree = "<group>"; };
@@ -273,7 +278,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				635ABB421EA9A2ED0057E656 /* jpush-ios-3.0.5.a in Frameworks */,
 				F852DAA2DAEFE7AC602B9C82 /* libPods-NowExercise.a in Frameworks */,
+				635ABB411EA9A2ED0057E656 /* jcore-ios-1.1.3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -607,6 +614,16 @@
 			path = V;
 			sourceTree = "<group>";
 		};
+		635ABB3D1EA9A2ED0057E656 /* JPush */ = {
+			isa = PBXGroup;
+			children = (
+				635ABB3E1EA9A2ED0057E656 /* jcore-ios-1.1.3.a */,
+				635ABB3F1EA9A2ED0057E656 /* jpush-ios-3.0.5.a */,
+				635ABB401EA9A2ED0057E656 /* JPUSHService.h */,
+			);
+			path = JPush;
+			sourceTree = "<group>";
+		};
 		635E0FC61E5188280027BA53 /* RPPageScrollView */ = {
 			isa = PBXGroup;
 			children = (
@@ -858,6 +875,7 @@
 		63DCD3A51E30712B0042C303 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				635ABB3D1EA9A2ED0057E656 /* JPush */,
 				63ADDFF21E8B519700F076A7 /* HYYCalendar */,
 				632530D21E8910C0007DA1DD /* player */,
 				639282541E3377AA00187073 /* HttpRequest.h */,
@@ -1238,6 +1256,10 @@
 				INFOPLIST_FILE = NowExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NowExercise/Tool/JPush",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.guodong.NowExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ebf1cb2d-b174-4745-8ac4-5ab798b8fc77";
@@ -1261,6 +1283,10 @@
 				INFOPLIST_FILE = NowExercise/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NowExercise/Tool/JPush",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.guodong.NowExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bd6ddb50-244a-48d9-8f70-218d9fee882b";

@@ -66,13 +66,23 @@
             [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
             [SVProgressHUD setStatus:@"正在登录"];
             [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
-            //2017-4-20
-#warning 登陆
             
+            NSDictionary * dic = @{@"number"       : self.numberTF.text,
+                                   @"code"         : self.SecurityTF.text,
+                                   @"registerID"   : [JPUSHService registrationID]?[JPUSHService registrationID]:@""};
+            NSString * loginUrl = [NSString stringWithFormat:@"%@userlogin/",BASEURL];
+            [HttpRequest PostHttpwithUrl:loginUrl andparameters:dic andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
+                [Default setBool:YES forKey:@"login"];
+                [Default setObject:self.numberTF.text forKey:@"phone"];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.LoginChangeRootView();
+                });
+            } andfailBlock:^(NSError *error) {
+                [HttpRequest showAlert];
+            }];
         }
     }
     
-    self.LoginChangeRootView();
 }
 //网络请求token值
 - (void)getTokenStr{

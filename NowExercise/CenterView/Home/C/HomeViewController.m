@@ -55,7 +55,7 @@
     [super viewDidLoad];
     //背景色
     self.view.backgroundColor = THEMECOLOR;
-    
+    [self InitData];
     [self CreatNavigationView];
     [self CreateUI];
     [self Reloddata];
@@ -63,12 +63,17 @@
     
     // Do any additional setup after loading the view from its nib.
 }
+#pragma mark 初始化数据
+- (void)InitData{
+    self.dataArr = [[NSMutableArray alloc]init];
+}
 #pragma mark 加载数据
 - (void)Reloddata{
 //    [SVProgressHUD showWithStatus:@"正在加载"];
 //    [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
     
     self.dataArr = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",nil];
+    
     [self createTableViewBannerView];
     [self.TableV reloadData];
     [self.pages reloadData];

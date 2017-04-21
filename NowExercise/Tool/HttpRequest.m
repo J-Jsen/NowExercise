@@ -88,7 +88,7 @@
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary * dataDic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        if ([[dataDic objectForKey:@"rc"] integerValue] == 0 || [[dataDic objectForKey:@"rc"] integerValue] == 24) {
+        if ([[dataDic objectForKey:@"rc"] integerValue] == 0) {
             successBlock(dataDic);
         }else{
             [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];

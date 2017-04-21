@@ -54,7 +54,7 @@
 
 #define FONT(NAME , SIZE)         [UIFont fontWithName:NAME size:HEIGHT_6(SIZE)]
 
-
+#define Default [NSUserDefaults standardUserDefaults]
 
 
 
@@ -79,5 +79,8 @@
 #import "RPRingedPages.h"//首页滚动视图
 #import "LSActionSheet.h"//提示框sheet
 #import "HYYCalendar.h"//日历
+
+
+#import "JPUSHService.h"
 
 #endif /* PrefixHeader_pch */
