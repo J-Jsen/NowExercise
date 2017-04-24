@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
+#import <UIKit/UIKit.h>
 
 //typedef void(^progressBlock)(NSProgress * downloadProgress);
 //typedef void(^successBlock)(id data);

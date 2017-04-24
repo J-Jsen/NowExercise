@@ -47,8 +47,7 @@
     if ([HttpRequest phoneValidateNumber:self.numberTF.text]) {
         [self.SecurityTF resignFirstResponder];
         /***************网络请求token值*********************/
-        
-        [self startWithTime:60 title:@"获取验证码" countDownTitle:@"s后重新获取" countColor:[UIColor grayColor]];
+        [self getTokenStr];
         
     }else{
         [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
@@ -56,7 +55,7 @@
     
 }
 - (IBAction)ChangeRootView:(id)sender {
-    if ([HttpRequest phoneValidateNumber:self.numberTF.text]) {
+    if (![HttpRequest phoneValidateNumber:self.numberTF.text]) {
         [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
     }else{
         if (self.SecurityTF.text.length == 0) {
@@ -70,7 +69,7 @@
             NSDictionary * dic = @{@"number"       : self.numberTF.text,
                                    @"code"         : self.SecurityTF.text,
                                    @"registerID"   : [JPUSHService registrationID]?[JPUSHService registrationID]:@""};
-            NSString * loginUrl = [NSString stringWithFormat:@"%@userlogin/",BASEURL];
+            NSString * loginUrl = [NSString stringWithFormat:@"%@userlogin/",TBASEURL];
             [HttpRequest PostHttpwithUrl:loginUrl andparameters:dic andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
                 [Default setBool:YES forKey:@"login"];
                 [Default setObject:self.numberTF.text forKey:@"phone"];
@@ -86,8 +85,8 @@
 }
 //网络请求token值
 - (void)getTokenStr{
-    NSString* getTokenUrl = [NSString stringWithFormat:@"%@token/?number=%@", BASEURL, self.numberTF.text];
-    [HttpRequest PostHttpwithUrl:getTokenUrl andparameters:nil andProgress:nil andsuccessBlock:^(NSDictionary * responseObject) {
+    NSString* getTokenUrl = [NSString stringWithFormat:@"%@token/?number=%@", TBASEURL, self.numberTF.text];
+    [HttpRequest PostHttpwithUrl:getTokenUrl andparameters:nil andProgress:nil andsuccessBlock:^(id responseObject) {
         /*
          请求参数：number=18618265727&timestamp=12456&sign=e1a4b2dd5816ff40d125f836669652eb
          app_kye = guodongapps
@@ -107,9 +106,10 @@
         // 将手机号和时间戳放入token数组
         [tokenArray addObject:photoNumber];
         [tokenArray addObject:timeString];
+        NSMutableDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         // 接收token值
-        if ([[responseObject allKeys] containsObject:@"token"]) {
-            NSString *token = [responseObject objectForKey:@"token"];
+        if ([[dic allKeys] containsObject:@"token"]) {
+            NSString *token = [dic objectForKey:@"token"];
             [tokenArray addObject:token];
         }
         // 数组排序
@@ -127,12 +127,17 @@
         
         /***************网络请求验证码*********************/
         
-        NSString* getMessageUrl = [NSString stringWithFormat:@"%@sendcode/", BASEURL];
+        NSString* getMessageUrl = [NSString stringWithFormat:@"%@sendcode/", TBASEURL];
         NSDictionary* messagedict = @{ @"number" : self.numberTF.text,
                                        @"sign" : MDString,
                                        @"time" : timeString
                                        };
-        [HttpRequest PostHttpwithUrl:getMessageUrl andparameters:messagedict andProgress:nil andsuccessBlock:^(NSDictionary * responseObject) {
+        [HttpRequest PostHttpwithUrl:getMessageUrl andparameters:messagedict andProgress:^(NSProgress *progress) {
+            
+        } andsuccessBlock:^(NSDictionary * responseObject) {
+            NSLog(@"%@",responseObject);
+            [self startWithTime:60 title:@"获取验证码" countDownTitle:@"s后重新获取" countColor:[UIColor grayColor]];
+
             
         } andfailBlock:^(NSError *error) {
             [HttpRequest showAlert];

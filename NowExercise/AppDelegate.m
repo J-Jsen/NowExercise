@@ -54,7 +54,7 @@
             [defaul setObject:app_version forKey:@"app_version"];
         };
         loginView.LoginChangeRootView       = ^{
-            self.window.rootViewController  = [[UINavigationController alloc]initWithRootViewController:[self mmdrawerView]];
+            self.window.rootViewController  = [self mmdrawerView];
             [self.window makeKeyAndVisible];
         };
     }

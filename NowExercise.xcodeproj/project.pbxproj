@@ -24,8 +24,6 @@
 		634F9A351E94E2C60066C6DD /* BodyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 634F9A331E94E2C60066C6DD /* BodyTableViewCell.m */; };
 		634F9A361E94E2C60066C6DD /* BodyTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 634F9A341E94E2C60066C6DD /* BodyTableViewCell.xib */; };
 		635612831E55AE380085DD99 /* AppointmentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 635612821E55AE380085DD99 /* AppointmentView.m */; };
-		635ABB411EA9A2ED0057E656 /* jcore-ios-1.1.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 635ABB3E1EA9A2ED0057E656 /* jcore-ios-1.1.3.a */; };
-		635ABB421EA9A2ED0057E656 /* jpush-ios-3.0.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 635ABB3F1EA9A2ED0057E656 /* jpush-ios-3.0.5.a */; };
 		635E0FCD1E5188280027BA53 /* RPPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E0FC81E5188280027BA53 /* RPPageControl.m */; };
 		635E0FCE1E5188280027BA53 /* RPPagesCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E0FCA1E5188280027BA53 /* RPPagesCarousel.m */; };
 		635E0FCF1E5188280027BA53 /* RPRingedPages.m in Sources */ = {isa = PBXBuildFile; fileRef = 635E0FCC1E5188280027BA53 /* RPRingedPages.m */; };
@@ -41,6 +39,20 @@
 		638A3EC21E30A190000F35E3 /* LeftViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 638A3EC01E30A190000F35E3 /* LeftViewController.xib */; };
 		638A3ED21E30B1C7000F35E3 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 638A3ED01E30B1C7000F35E3 /* HomeViewController.m */; };
 		638A3ED31E30B1C7000F35E3 /* HomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 638A3ED11E30B1C7000F35E3 /* HomeViewController.xib */; };
+		638AC4FB1EADAF3B007F822D /* jcore-ios-1.1.3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC4F81EADAF3B007F822D /* jcore-ios-1.1.3.a */; };
+		638AC4FC1EADAF3B007F822D /* jpush-ios-3.0.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC4F91EADAF3B007F822D /* jpush-ios-3.0.5.a */; };
+		638AC4FE1EADB514007F822D /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC4FD1EADB514007F822D /* CFNetwork.framework */; };
+		638AC5001EADB51D007F822D /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC4FF1EADB51D007F822D /* CoreFoundation.framework */; };
+		638AC5021EADB563007F822D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC5011EADB563007F822D /* CoreTelephony.framework */; };
+		638AC5041EADB56A007F822D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC5031EADB56A007F822D /* SystemConfiguration.framework */; };
+		638AC5061EADB572007F822D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC5051EADB572007F822D /* CoreGraphics.framework */; };
+		638AC5081EADB57F007F822D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC5071EADB57F007F822D /* Foundation.framework */; };
+		638AC50A1EADB589007F822D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC5091EADB589007F822D /* UIKit.framework */; };
+		638AC50C1EADB592007F822D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC50B1EADB592007F822D /* Security.framework */; };
+		638AC50E1EADB5A2007F822D /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC50D1EADB5A2007F822D /* libz.tbd */; };
+		638AC5101EADB5AF007F822D /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC50F1EADB5AF007F822D /* UserNotifications.framework */; };
+		638AC5121EADB5BC007F822D /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 638AC5111EADB5BC007F822D /* libresolv.tbd */; };
+		638AC5151EAE0046007F822D /* HomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 638AC5141EAE0046007F822D /* HomeModel.m */; };
 		639282481E33324400187073 /* VBFDoubleSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 639282451E33324400187073 /* VBFDoubleSegment.m */; };
 		639282491E33324400187073 /* VBFPopFlatButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 639282471E33324400187073 /* VBFPopFlatButton.m */; };
 		6392824D1E335F8000187073 /* LeftCell_1.m in Sources */ = {isa = PBXBuildFile; fileRef = 6392824B1E335F8000187073 /* LeftCell_1.m */; };
@@ -135,9 +147,6 @@
 		634F9A341E94E2C60066C6DD /* BodyTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BodyTableViewCell.xib; sourceTree = "<group>"; };
 		635612811E55AE380085DD99 /* AppointmentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppointmentView.h; sourceTree = "<group>"; };
 		635612821E55AE380085DD99 /* AppointmentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppointmentView.m; sourceTree = "<group>"; };
-		635ABB3E1EA9A2ED0057E656 /* jcore-ios-1.1.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-1.1.3.a"; sourceTree = "<group>"; };
-		635ABB3F1EA9A2ED0057E656 /* jpush-ios-3.0.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-3.0.5.a"; sourceTree = "<group>"; };
-		635ABB401EA9A2ED0057E656 /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
 		635E0FC71E5188280027BA53 /* RPPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPPageControl.h; sourceTree = "<group>"; };
 		635E0FC81E5188280027BA53 /* RPPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RPPageControl.m; sourceTree = "<group>"; };
 		635E0FC91E5188280027BA53 /* RPPagesCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RPPagesCarousel.h; sourceTree = "<group>"; };
@@ -163,6 +172,22 @@
 		638A3ECF1E30B1C7000F35E3 /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		638A3ED01E30B1C7000F35E3 /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		638A3ED11E30B1C7000F35E3 /* HomeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HomeViewController.xib; sourceTree = "<group>"; };
+		638AC4F81EADAF3B007F822D /* jcore-ios-1.1.3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-1.1.3.a"; sourceTree = "<group>"; };
+		638AC4F91EADAF3B007F822D /* jpush-ios-3.0.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-3.0.5.a"; sourceTree = "<group>"; };
+		638AC4FA1EADAF3B007F822D /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
+		638AC4FD1EADB514007F822D /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		638AC4FF1EADB51D007F822D /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		638AC5011EADB563007F822D /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		638AC5031EADB56A007F822D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		638AC5051EADB572007F822D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		638AC5071EADB57F007F822D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		638AC5091EADB589007F822D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		638AC50B1EADB592007F822D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		638AC50D1EADB5A2007F822D /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		638AC50F1EADB5AF007F822D /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		638AC5111EADB5BC007F822D /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		638AC5131EAE0046007F822D /* HomeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeModel.h; sourceTree = "<group>"; };
+		638AC5141EAE0046007F822D /* HomeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeModel.m; sourceTree = "<group>"; };
 		639281A61E332A1F00187073 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		639282441E33324400187073 /* VBFDoubleSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VBFDoubleSegment.h; sourceTree = "<group>"; };
 		639282451E33324400187073 /* VBFDoubleSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VBFDoubleSegment.m; sourceTree = "<group>"; };
@@ -278,9 +303,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				635ABB421EA9A2ED0057E656 /* jpush-ios-3.0.5.a in Frameworks */,
+				638AC5121EADB5BC007F822D /* libresolv.tbd in Frameworks */,
+				638AC5101EADB5AF007F822D /* UserNotifications.framework in Frameworks */,
+				638AC50E1EADB5A2007F822D /* libz.tbd in Frameworks */,
+				638AC50C1EADB592007F822D /* Security.framework in Frameworks */,
+				638AC50A1EADB589007F822D /* UIKit.framework in Frameworks */,
+				638AC5081EADB57F007F822D /* Foundation.framework in Frameworks */,
+				638AC5061EADB572007F822D /* CoreGraphics.framework in Frameworks */,
+				638AC5041EADB56A007F822D /* SystemConfiguration.framework in Frameworks */,
+				638AC5021EADB563007F822D /* CoreTelephony.framework in Frameworks */,
+				638AC5001EADB51D007F822D /* CoreFoundation.framework in Frameworks */,
+				638AC4FE1EADB514007F822D /* CFNetwork.framework in Frameworks */,
+				638AC4FC1EADAF3B007F822D /* jpush-ios-3.0.5.a in Frameworks */,
 				F852DAA2DAEFE7AC602B9C82 /* libPods-NowExercise.a in Frameworks */,
-				635ABB411EA9A2ED0057E656 /* jcore-ios-1.1.3.a in Frameworks */,
+				638AC4FB1EADAF3B007F822D /* jcore-ios-1.1.3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -614,16 +650,6 @@
 			path = V;
 			sourceTree = "<group>";
 		};
-		635ABB3D1EA9A2ED0057E656 /* JPush */ = {
-			isa = PBXGroup;
-			children = (
-				635ABB3E1EA9A2ED0057E656 /* jcore-ios-1.1.3.a */,
-				635ABB3F1EA9A2ED0057E656 /* jpush-ios-3.0.5.a */,
-				635ABB401EA9A2ED0057E656 /* JPUSHService.h */,
-			);
-			path = JPush;
-			sourceTree = "<group>";
-		};
 		635E0FC61E5188280027BA53 /* RPPageScrollView */ = {
 			isa = PBXGroup;
 			children = (
@@ -704,6 +730,8 @@
 		638A3ECD1E30B1BB000F35E3 /* M */ = {
 			isa = PBXGroup;
 			children = (
+				638AC5131EAE0046007F822D /* HomeModel.h */,
+				638AC5141EAE0046007F822D /* HomeModel.m */,
 			);
 			path = M;
 			sourceTree = "<group>";
@@ -726,6 +754,16 @@
 				637D02071E8A2C9E00EC1B76 /* PayCell.xib */,
 			);
 			path = V;
+			sourceTree = "<group>";
+		};
+		638AC4F71EADAF3B007F822D /* JPush */ = {
+			isa = PBXGroup;
+			children = (
+				638AC4F81EADAF3B007F822D /* jcore-ios-1.1.3.a */,
+				638AC4F91EADAF3B007F822D /* jpush-ios-3.0.5.a */,
+				638AC4FA1EADAF3B007F822D /* JPUSHService.h */,
+			);
+			path = JPush;
 			sourceTree = "<group>";
 		};
 		639282431E33324400187073 /* VBFPopFlatButtonClasses */ = {
@@ -875,7 +913,7 @@
 		63DCD3A51E30712B0042C303 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				635ABB3D1EA9A2ED0057E656 /* JPush */,
+				638AC4F71EADAF3B007F822D /* JPush */,
 				63ADDFF21E8B519700F076A7 /* HYYCalendar */,
 				632530D21E8910C0007DA1DD /* player */,
 				639282541E3377AA00187073 /* HttpRequest.h */,
@@ -909,6 +947,17 @@
 		E5FFA45AD6175AD797D9FA45 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				638AC5111EADB5BC007F822D /* libresolv.tbd */,
+				638AC50F1EADB5AF007F822D /* UserNotifications.framework */,
+				638AC50D1EADB5A2007F822D /* libz.tbd */,
+				638AC50B1EADB592007F822D /* Security.framework */,
+				638AC5091EADB589007F822D /* UIKit.framework */,
+				638AC5071EADB57F007F822D /* Foundation.framework */,
+				638AC5051EADB572007F822D /* CoreGraphics.framework */,
+				638AC5031EADB56A007F822D /* SystemConfiguration.framework */,
+				638AC5011EADB563007F822D /* CoreTelephony.framework */,
+				638AC4FF1EADB51D007F822D /* CoreFoundation.framework */,
+				638AC4FD1EADB514007F822D /* CFNetwork.framework */,
 				9742E63BBF0110294E1FDFC9 /* libPods-NowExercise.a */,
 			);
 			name = Frameworks;
@@ -949,7 +998,7 @@
 					63B41AC91DB9F33100B7F60D = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = W3F8ZLM4DL;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
 								enabled = 1;
@@ -1096,6 +1145,7 @@
 				6394C6D01E31F7F1007ECD44 /* MMDrawerController.m in Sources */,
 				63ADE00A1E8B519700F076A7 /* HYYCalendar.m in Sources */,
 				63D1ED691E53F14300448415 /* ClassViewController.m in Sources */,
+				638AC5151EAE0046007F822D /* HomeModel.m in Sources */,
 				63ADE00E1E8B519700F076A7 /* HYYCalendarLayout.m in Sources */,
 				638A3EC11E30A190000F35E3 /* LeftViewController.m in Sources */,
 				63ADE00B1E8B519700F076A7 /* HYYCalendarCollectionHeaderView.m in Sources */,
@@ -1194,6 +1244,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1236,6 +1287,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1262,9 +1314,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.guodong.NowExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ebf1cb2d-b174-4745-8ac4-5ab798b8fc77";
-				PROVISIONING_PROFILE_SPECIFIER = "立炼的开发配置文件";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1275,7 +1327,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = NowExercise/NowExercise.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = W3F8ZLM4DL;
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1289,9 +1341,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.guodong.NowExercise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bd6ddb50-244a-48d9-8f70-218d9fee882b";
-				PROVISIONING_PROFILE_SPECIFIER = "立炼的发布配置文件";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

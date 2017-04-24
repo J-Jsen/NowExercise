@@ -26,6 +26,8 @@
 
 #define BASEURL @"http://www.guodongwl.com:8065/"
 
+#define TBASEURL @"http://www.antson.cn:8065/"
+
 #define COLOR(R , G , B) [UIColor colorWithRed:R / 255.0f green:G / 255.0f blue:B / 255.0f alpha:1]
 //马卡金
 #define MAKA_JIN_COLOR COLOR(231 , 212 , 194)
@@ -57,6 +59,10 @@
 #define Default [NSUserDefaults standardUserDefaults]
 
 
+#define STRING_PROPERTY(Str) @property (nonatomic , copy) NSString * Str;
+#define INTEGER_PROPERTY(Integer) @property (nonatomic , assign) NSInteger Integer;
+
+
 
 
 
@@ -79,7 +85,7 @@
 #import "RPRingedPages.h"//首页滚动视图
 #import "LSActionSheet.h"//提示框sheet
 #import "HYYCalendar.h"//日历
-
+#import <UIImageView+WebCache.h>
 
 #import "JPUSHService.h"
 

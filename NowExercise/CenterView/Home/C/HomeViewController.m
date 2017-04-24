@@ -24,7 +24,9 @@
 
 #import "AppointmentView.h"
 @interface HomeViewController ()<NavigationViewDelegate,UITableViewDelegate,UITableViewDataSource,SRAlertViewDelegate,RPRingedPagesDelegate,RPRingedPagesDataSource>
-
+{
+    BOOL persenMessage;
+}
 /**
  自定制导航栏
  */
@@ -47,22 +49,50 @@
 @implementation HomeViewController
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    self.navigationController.navigationBar.hidden = YES;
+    self.navigationController.navigationBar.alpha = 0;
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
-    [UIApplication sharedApplication].statusBarHidden = NO;
+//    self.navigationController.navigationBar.translucent = NO;
+//    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+    
+//    [UIApplication sharedApplication].statusBarHidden = NO;
+}
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     //背景色
     self.view.backgroundColor = THEMECOLOR;
     [self InitData];
     [self CreatNavigationView];
     [self CreateUI];
+    if (!persenMessage) {
+        [self loadPersent];
+    }
     [self Reloddata];
     
     
     // Do any additional setup after loading the view from its nib.
 }
+- (void)loadPersent{
+    NSString * url = [NSString stringWithFormat:@"%@api/?method=index.index",TBASEURL];
+    
+    [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary * responseObject) {
+        if ([[responseObject objectForKey:@"rc"] integerValue] == 3) {
+            
+        }
+        
+    } andfailBlock:^(NSError *error) {
+        [HttpRequest showAlert];
+    }];
+//
+    
+}
+
 #pragma mark 初始化数据
 - (void)InitData{
     self.dataArr = [[NSMutableArray alloc]init];
@@ -71,6 +101,7 @@
 - (void)Reloddata{
 //    [SVProgressHUD showWithStatus:@"正在加载"];
 //    [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
+    
     
     self.dataArr = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",nil];
     
@@ -84,7 +115,6 @@
     self.pages = [[RPRingedPages alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(400))];
     _pages.carousel.pageScale = 0.8;
     self.pages.carousel.mainPageSize = CGSizeMake(WIDTH_6(280), 320);
-    //        _pages.pageControlPosition = RPPageControlPositonAboveBody;
     _pages.delegate = self;
     _pages.dataSource = self;
     [view addSubview:_pages];

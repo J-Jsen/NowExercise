@@ -17,11 +17,13 @@
         sharemanager = [AFHTTPSessionManager manager];
     });
     
-    sharemanager.requestSerializer.timeoutInterval = 10;
-    sharemanager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/html",@"text/json",@"text/javascript", @"text/plain", nil];
-    [sharemanager.requestSerializer setValue:@"1.0.0" forHTTPHeaderField:@"appVersion"];
+    // 2.设置返回类型
+    sharemanager.responseSerializer    = [AFHTTPResponseSerializer serializer];
+    sharemanager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
+    // 设置请求类型
+    [sharemanager.requestSerializer setValue:@"application/json;version=4.0" forHTTPHeaderField:@"Accept"];
+    [sharemanager.requestSerializer setValue:@"IOS" forHTTPHeaderField:@"PLATFORM"];
     return sharemanager;
-    
     
 }
 
@@ -60,15 +62,14 @@
     
             // 1.创建管理者对象
         AFHTTPSessionManager * manager = [HttpRequest sharemanager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manager GET:url parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
    
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary * dataDic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        if ([[dataDic objectForKey:@"rc"] integerValue] == 0 || [[dataDic objectForKey:@"rc"] integerValue] == 24) {
+        if ([[dataDic objectForKey:@"rc"] integerValue] == 0 || [[dataDic objectForKey:@"rc"] integerValue] == 3) {
             successBlock(dataDic);
         }else{
-            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:nil];
         }
 
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -79,22 +80,21 @@
     
 }
 //post请求
-+ (void)PostHttpwithUrl:(NSString *)url andparameters:(NSDictionary *)parameters andProgress:(void(^)(NSProgress *progress))progress andsuccessBlock:(void(^)(NSDictionary* responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock{
++ (void)PostHttpwithUrl:(NSString *)url andparameters:(NSDictionary *)parameters andProgress:(void(^)(NSProgress * _Nonnull progress))progress andsuccessBlock:(void(^)(NSDictionary * responseObject))successBlock andfailBlock:(void(^)(NSError * error))failBlock{
     
     AFHTTPSessionManager * manager = [HttpRequest sharemanager];
     
-    [manager POST:url parameters:nil progress:^(NSProgress * _Nonnull uploadProgress) {
-        progress(uploadProgress);
+    [manager POST:url parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+       
+//        progress(uploadProgress);
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary * dataDic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        if ([[dataDic objectForKey:@"rc"] integerValue] == 0) {
+        if ([[dataDic objectForKey:@"rc"] integerValue] == 0 || [[dataDic objectForKey:@"rc"] integerValue] == 3) {
             successBlock(dataDic);
         }else{
-            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:[dataDic objectForKey:@"msg"] leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:nil];
         }
-        
-        
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failBlock(error);
      
@@ -120,7 +120,7 @@
     
 }
 + (void)showAlert{
-    [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"服务器开小差了..." leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+    [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"服务器开小差了..." leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:nil];
 }
 /// 根据指定文本,字体和最大宽度计算尺寸
 + (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxWidth:(CGFloat)width
