@@ -72,6 +72,14 @@
     }
     return self;
 }
+
+- (void)createCellWithModel:(Sellmodel *)model{
+    packageLabel.text = model.name;
+    valueLabel.text = [NSString stringWithFormat:@"充值%ld元",(long)model.price];
+    classTimersLabel.text = [NSString stringWithFormat:@"含%ld节课",(long)model.number];
+    
+}
+
 - (void)layoutBackGroundViewSubviews{
     
     [packageLabel mas_makeConstraints:^(MASConstraintMaker *make) {

@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Sellmodel.h"
 @interface SellCell : UITableViewCell
+
+- (void)createCellWithModel:(Sellmodel *)model;
+
 
 @end

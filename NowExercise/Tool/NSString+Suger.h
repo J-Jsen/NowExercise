@@ -50,5 +50,12 @@
  @return 32位字符
  */
 - (NSString *)md5:(NSString *)str;
+/**
+ 去掉其他字符,保留字符串中的数字
 
+ @param Str 输入的字符串
+ @return 只有数字的字符串
+ */
++ (NSString *)numberReserve:(NSString *)Str;
++ (NSString *)CanUseString:(NSString *)str;
 @end

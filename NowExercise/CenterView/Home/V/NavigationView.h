@@ -7,18 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CLLocationManagerDelegate.h>
+#import <CoreLocation/CoreLocation.h>
 
 @protocol NavigationViewDelegate <NSObject>
 
 - (void)NavigationViewMenuButtonClick;
-
+- (void)NavigationViewRightBtnClick;
 @end
 
-@interface NavigationView : UIView
+@interface NavigationView : UIView<CLLocationManagerDelegate>
 
 @property (nonatomic , weak) id<NavigationViewDelegate>delegate;
 @property (nonatomic , assign) BOOL MenuStaus;
-
+- (void)location;
 /**
  打开状态方法
  */

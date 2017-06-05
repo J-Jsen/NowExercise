@@ -14,7 +14,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [UIColor redColor];
+        self.backgroundColor = [UIColor blackColor];
         scrollV = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, SCREEN_H)];
         
         scrollV.maximumZoomScale = 2.0;
@@ -28,7 +28,7 @@
         
         photoImageV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, SCREEN_H)];
         photoImageV.backgroundColor = [UIColor blackColor];
-        photoImageV.contentMode = UIViewContentModeCenter;
+        photoImageV.contentMode = UIViewContentModeScaleAspectFit;
         [scrollV addSubview:photoImageV];
         
         NSLog(@"位置:::::************%@",photoImageV);

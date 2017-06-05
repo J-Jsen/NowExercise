@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "MyDataModel.h"
 @protocol DetailBodyCollectionViewCellDelegate <NSObject>
 
 - (void)presentDetailPhotoViewImageArr:(NSArray *)arr index:(NSInteger )index;
@@ -20,4 +20,6 @@
 
 - (void)disselectCell;
 - (void)selectCell;
+- (void)createCellWithModel:(MyDataModel *)model;
+
 @end

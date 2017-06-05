@@ -28,6 +28,7 @@
         titleLabel.font = FONT(@"", 17);
         numberLabel.font = FONT(@"", 17);
         titleLabel.textColor = [UIColor whiteColor];
+        numberLabel.textColor = [UIColor whiteColor];
         //titleImageV.backgroundColor = [UIColor grayColor];
         titleImageV.contentMode = UIViewContentModeCenter;
         [self addSubview:titleLabel];
@@ -50,7 +51,7 @@
     [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.offset(0);
         make.left.mas_equalTo(titleImageV.mas_right).offset(10);
-        make.width.mas_equalTo(WIDTH_6(100));
+        make.width.mas_equalTo(WIDTH_6(50));
         make.height.mas_equalTo(self.frame.size.height - 10);
     }];
     
@@ -67,10 +68,8 @@
     titleLabel.text = titleName;
     
 }
-
-- (void)setdataWithNumber:(NSString *)number{
+- (void)packagenumber:(NSString *)number{
     numberLabel.text = number;
-
 }
 
 - (void)awakeFromNib {

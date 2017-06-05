@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface IconViewController : UIViewController
+@property (nonatomic , copy) void(^iconBackBlock)(UIImage * image);
+@property (nonatomic , strong) UIImage * image;
 
 @end

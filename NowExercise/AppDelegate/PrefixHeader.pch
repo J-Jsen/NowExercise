@@ -20,7 +20,7 @@
 #define HEIGHT_6(FLOAT)  (SCREEN_H * FLOAT) / 667
 
 //汉堡栏宽度
-#define MENU_WIDTH       250.0
+#define MENU_WIDTH       200
 
 
 
@@ -29,8 +29,18 @@
 #define TBASEURL @"http://www.antson.cn:8065/"
 
 #define COLOR(R , G , B) [UIColor colorWithRed:R / 255.0f green:G / 255.0f blue:B / 255.0f alpha:1]
+/**
+ *  十六进制的颜色值  0xff7d2b
+ */
+#define UIColorFromRGB(rgbValue) \
+[UIColor colorWithRed:  ((float)((rgbValue & 0xFF0000) >> 16)) / 255.0 \
+green:((float)((rgbValue & 0xFF00)   >> 8))  / 255.0 \
+blue: ((float)( rgbValue & 0xFF))            / 255.0 \
+alpha:1.0]
+
+
 //马卡金
-#define MAKA_JIN_COLOR COLOR(231 , 212 , 194)
+#define MAKA_JIN_COLOR COLOR(226 , 207 , 192)
 //导航栏颜色
 #define NAV_COLOR COLOR(31 , 31 ,31)
 //背景颜色
@@ -61,11 +71,15 @@
 
 #define STRING_PROPERTY(Str) @property (nonatomic , copy) NSString * Str;
 #define INTEGER_PROPERTY(Integer) @property (nonatomic , assign) NSInteger Integer;
+#define ARRAY_PROPERTY(MUTABLEARR)  @property (nonatomic , strong) NSMutableArray * MUTABLEARR;
+#define DIC_PROPERTY(Dic) @property (nonatomic ,strong) NSMutableDictionary * Dic;
+
+#define WeakSelf    __weak typeof(self) weakSelf = self;
 
 
 
 
-
+#define JpushAppKey  @"1504222818b05a9482a436bf"
 
 
 
@@ -86,7 +100,10 @@
 #import "LSActionSheet.h"//提示框sheet
 #import "HYYCalendar.h"//日历
 #import <UIImageView+WebCache.h>
-
+#import <MJRefresh.h>
 #import "JPUSHService.h"
+#import "Pingpp.h"
+#import "NewPagedFlowView.h"
+#import "DLPickerView.h"//多行滚轮
 
 #endif /* PrefixHeader_pch */

@@ -28,7 +28,7 @@
     // 设置设计格式
     [matter setDateFormat:format];
     // 进行转换
-    NSTimeInterval time = [date doubleValue] + 28800;
+    NSTimeInterval time = [date doubleValue];
     NSDate * Date = [NSDate dateWithTimeIntervalSince1970:time];
     NSString *dateStr = [matter stringFromDate:Date];
     return dateStr;
@@ -93,7 +93,13 @@
             result[28], result[29],result[30], result[31]];
     
 }
-
-
-
++ (NSString *)numberReserve:(NSString *)Str{
+    NSCharacterSet *nonDigits    = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+    NSString       *remainSecond = [Str stringByTrimmingCharactersInSet:nonDigits];
+    return remainSecond;
+}
++ (NSString *)CanUseString:(NSString *)str{
+    NSString * string = [str stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet illegalCharacterSet]];
+    return string;
+}
 @end

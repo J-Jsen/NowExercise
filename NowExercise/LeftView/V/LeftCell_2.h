@@ -11,8 +11,7 @@
 @interface LeftCell_2 : UITableViewCell
 
 - (void)crateCellWithImageName:(NSString *)imageName andtitleName:(NSString *)titleName;
-- (void)setdataWithNumber:(NSString *)number;
-
+- (void)packagenumber:(NSString *)number;
 
 
 @end

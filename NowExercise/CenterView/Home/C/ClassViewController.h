@@ -10,4 +10,7 @@
 
 @interface ClassViewController : UIViewController
 
+@property (nonatomic , copy) NSString * class_id;
+
+
 @end

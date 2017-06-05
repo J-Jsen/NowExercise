@@ -11,5 +11,6 @@
 @interface AboutUsViewController : UIViewController
 @property (weak, nonatomic) IBOutlet UILabel *AppVersionLabel;
 @property (weak, nonatomic) IBOutlet UIButton *WangZhiBtn;
+@property (weak, nonatomic) IBOutlet UIImageView *usImageV;
 
 @end

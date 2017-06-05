@@ -8,17 +8,14 @@
 
 #import "UserTableViewCell.h"
 
-@interface UserTableViewCell ()
+@interface UserTableViewCell ()<UITextFieldDelegate>
 {
-    UIImageView * titleImageV;
-    UILabel * titleLabel;
+    UITextField * detailTF;
     
-    UIImageView * detailImageV;
-    UILabel * detailLabel;
-    
-    UIImageView * subTitleV;
-}
+    UILabel * statusLabel;
 
+    CellImageViewType type;
+}
 @end
 
 @implementation UserTableViewCell
@@ -26,80 +23,119 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.backgroundColor = COLOR(231, 212, 194);
-        titleImageV = [[UIImageView alloc]init];
-        titleLabel = [[UILabel alloc]init];
-        detailImageV = [[UIImageView alloc]init];
-        detailLabel = [[UILabel alloc]init];
-        subTitleV = [[UIImageView alloc]init];
+        _titleLabel = [[UILabel alloc]init];
+        _detailImageV = [[UIImageView alloc]init];
+        detailTF = [[UITextField alloc]init];
+        statusLabel = [[UILabel alloc]init];
+
+        detailTF.textAlignment = NSTextAlignmentRight;
+        _detailImageV.layer.masksToBounds = YES;
+        _detailImageV.layer.cornerRadius = HEIGHT_6(25);
+        _titleLabel.font = [UIFont systemFontOfSize:HEIGHT_6(18)];
+        statusLabel.font = [UIFont systemFontOfSize:HEIGHT_6(13)];
+        statusLabel.hidden = YES;
+        statusLabel.textColor = [UIColor blackColor];
+        detailTF.font = [UIFont systemFontOfSize:HEIGHT_6(17)];
+        detailTF.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        detailTF.returnKeyType = UIReturnKeyDone;
+        detailTF.textColor = [UIColor grayColor];
+        detailTF.delegate = self;
+//        titleLabel.backgroundColor = [UIColor redColor];
+//        detailImageV.backgroundColor = [UIColor redColor];
         
-        titleImageV.layer.masksToBounds = YES;
-        detailImageV.layer.masksToBounds = YES;
-        
-        titleLabel.font = [UIFont systemFontOfSize:HEIGHT_6(18)];
-        detailLabel.font = [UIFont systemFontOfSize:HEIGHT_6(18)];
-        
-        titleLabel.backgroundColor = [UIColor redColor];
-        detailImageV.backgroundColor = [UIColor redColor];
-        subTitleV.backgroundColor = [UIColor redColor];
-        
-        [self addSubview:titleImageV];
-        [self addSubview:titleLabel];
-        [self addSubview:detailLabel];
-        [self addSubview:detailImageV];
-        [self addSubview:subTitleV];
+        [self addSubview:statusLabel];
+        [self addSubview:detailTF];
+        [self addSubview:_titleLabel];
+        [self addSubview:_detailImageV];
         
     }
     return self;
 }
+- (void)creatCellWithTitle:(NSString *)title{
+    _titleLabel.text = title;
+}
 - (void)createCellWithCellType:(CellImageViewType)CellType{
+    type = CellType;
     //masonry布局
-    [subTitleV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.offset( - 10);
-        make.width.and.height.mas_equalTo(HEIGHT_6(20));
+    [_titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(10);
         make.centerY.offset(0);
+        make.height.mas_equalTo(HEIGHT_6(45));
+        make.width.mas_equalTo(100);
     }];
-
-    //前面有图片的
-    if (CellType == CellImageWithTitle) {
-        [titleImageV mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(10);
-            make.width.and.height.mas_equalTo(HEIGHT_6(25));
+    [statusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.offset(60);
+        make.centerY.offset(0);
+        make.width.mas_equalTo(50);
+        make.height.offset(HEIGHT_6(45));
+    }];
+    //后面是图还是文字
+    if (CellType == CellImage) {
+        //图片
+        [_detailImageV mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.right.offset(-20);
             make.centerY.offset(0);
+            make.width.height.mas_equalTo(HEIGHT_6(50));
         }];
-        titleImageV.layer.cornerRadius = HEIGHT_6(25);
-        
-        [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.mas_equalTo(titleImageV.mas_right).offset(10);
-            make.width.mas_equalTo(50);
-            make.height.mas_equalTo(HEIGHT_6(25));
-            make.centerY.offset(0);
-        }];
-        
-    }else{
-       //后面是头像
-        [titleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.offset(10);
-            make.width.mas_equalTo(50);
-            make.height.mas_equalTo(HEIGHT_6(25));
-            make.centerY.offset(0);
-
-        }];
-        
-        [detailImageV mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.right.mas_equalTo(subTitleV.mas_left).offset(- 10);
-            make.height.and.width.mas_equalTo(CGRectGetHeight(self.frame) - 20);
-            make.centerY.offset(0);
-            
-        }];
-        detailImageV.layer.cornerRadius = detailImageV.frame.size.height / 2.0f;
+    }else if(CellType == CellTitle){
+        //文字
+       [detailTF mas_makeConstraints:^(MASConstraintMaker *make) {
+           make.right.offset(-20);
+           make.centerY.offset(0);
+           make.width.mas_equalTo(150);
+           make.height.mas_equalTo(HEIGHT_6(45));
+       }];
     }
-    
+}
+- (void)hide{
+    statusLabel.hidden = NO;
+}
+- (void)createCellWithStr:(NSString *)str{
+    if (type == CellImage) {
+        [_detailImageV sd_setImageWithURL:[NSURL URLWithString:str]];
+    }else if(type == CellTitle){
+        detailTF.text = str;
+    }
+    if (_index == 7) {
+        [self hide];
+        float BMI = [str floatValue];
+        if (BMI < 18.50) {
+            statusLabel.textColor = UIColorFromRGB(0xe74c3c);
+            statusLabel.text      = @"偏低";
+        } else if (BMI > 22.90) {
+            statusLabel.textColor = UIColorFromRGB(0xe74c3c);
+            statusLabel.text      = @"偏高";
+        } else {
+            statusLabel.textColor = [UIColor colorWithRed:0 green:206/255.0 blue:185/255.0 alpha:1];
+            statusLabel.text      = @"正常";
+        }
+    }
+}
+- (void)createCellImage:(UIImage *)image{
+    _detailImageV.image = image;
+}
+- (void)CellTFCanUse{
+    detailTF.userInteractionEnabled = NO;
 }
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
 }
-
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    NSLog(@"体重身高");
+    if ([textField.text integerValue] <=0) {
+        [HttpRequest showAlertWithTitle:@"请正确填写"];
+        [textField becomeFirstResponder];
+    }else{
+        if ([self.delegate respondsToSelector:@selector(detailTitle:andindex:)]) {
+            [self.delegate detailTitle:textField.text andindex:_index];
+        }
+    }
+}
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [detailTF resignFirstResponder];
+    return YES;
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

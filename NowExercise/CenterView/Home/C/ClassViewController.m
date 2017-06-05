@@ -9,7 +9,8 @@
 #import "ClassViewController.h"
 #import "SUplayer.h"
 #import "PayViewController.h"
-@interface ClassViewController ()<SRAlertViewDelegate,SUplayerDelegate>
+#import "SugerAlertView.h"
+@interface ClassViewController ()<SugerAlertViewDelegate,SUplayerDelegate>
 {
     SUplayer * player;
 }
@@ -18,7 +19,7 @@
 @implementation ClassViewController
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.navigationController.navigationBarHidden = YES;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeNone];
     [UIApplication sharedApplication].statusBarHidden = YES;
     
@@ -49,7 +50,7 @@
 #pragma mark 播放器代理
 - (void)ShowAddOrderView{
     
-    [SRAlertView sr_showAlertViewWithPlaceOrType:ClassTypeClass Delegate:self];
+    [SugerAlertView sr_showAlertViewWithPlaceOrType:ClassTypeWithClass Delegate:self model:nil];
     [player pause];
 }
 
@@ -62,7 +63,7 @@
         pay.payback = ^{
             [player play];
         };
-        pay.ispay_money = NO;
+        //pay.ispay_money = NO;
         [self.navigationController pushViewController:pay animated:YES];
     
     
@@ -73,6 +74,7 @@
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     [player pause];
+    [UIApplication sharedApplication].statusBarHidden = NO;
 }
 /*
 #pragma mark - Navigation

@@ -12,8 +12,7 @@
 @protocol MenuDelegate <NSObject>
 
 - (void)PushViewControllerWithKey:(NSInteger)key;
-
-
+- (void)PushActivityViewControllerWithUrl:(NSString *)url;
 @end
 
 @interface LeftViewController : UIViewController

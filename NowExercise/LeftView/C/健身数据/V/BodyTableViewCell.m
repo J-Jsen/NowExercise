@@ -251,7 +251,7 @@
     Target_Heart_ImageV.backgroundColor = THEMECOLOR;
     
     collectionV = [[DetailBodyView alloc]init];
-    collectionV.backgroundColor = [UIColor purpleColor];
+//    collectionV.backgroundColor = [UIColor purpleColor];
     collectionV.delegate = self;
     [self addSubview:collectionV];
     

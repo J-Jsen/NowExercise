@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface DetailCell : UITableViewCell
+
 //标题
 @property (weak, nonatomic) IBOutlet UILabel *DetailLabel;
 //课程介绍标题
@@ -24,10 +25,10 @@
 //立炼告知内容
 @property (weak, nonatomic) IBOutlet UILabel *NowExerciseLabel;
 
+@property (nonatomic , assign) CGFloat Cell_H;
 
 
-
-- (void)createCellWith:(NSString *)detailStr;
+- (void)createCellWith:(NSString *)detailStr title:(NSString *)title;
 
 
 @end

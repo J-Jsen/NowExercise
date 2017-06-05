@@ -110,7 +110,7 @@
     
     [self addSubview:self.pickerView];
     [self addSubview:self.calendarView];
-    [self addSubview:self.switchContainer];
+//    [self addSubview:self.switchContainer];
     
     __weak typeof(self) weakSelf = self;
     self.calendarView.calendarCallback = ^(NSDate *date, NSUInteger number) {

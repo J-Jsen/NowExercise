@@ -33,7 +33,6 @@
         self.textColor = [UIColor grayColor];
         self.textAlignment = NSTextAlignmentCenter;
         self.numberOfLines = 0;
-        self.text = @"0cm";
     }
     return self;
 }

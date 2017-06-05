@@ -23,10 +23,10 @@
 
 
 typedef UIView * (^AlertViewBlock)(void);
-typedef enum : NSUInteger {
-    ClassTypeexperience,
-    ClassTypeClass,
-} ClassType;
+//typedef enum : NSUInteger {
+//    ClassTypeexperience,
+//    ClassTypeClass,
+//} ClassType;
 
 typedef NS_ENUM(NSInteger, AlertViewActionType) {
     AlertViewActionTypeLeft,
@@ -45,8 +45,8 @@ typedef NS_ENUM(NSInteger, AlertViewAnimationStyle) {
 @protocol SRAlertViewDelegate <NSObject>
 @optional
 - (void)alertViewDidSelectAction:(AlertViewActionType)actionType;
-- (void)orderWithName:(NSString *)name tel:(NSString *)tel date:(NSString *)date time:(NSString *)time place:(NSString *)place classname:(NSString *)classname;
-- (void)SRAlertDismiss;
+//- (void)orderWithName:(NSString *)name tel:(NSString *)tel date:(NSString *)date time:(NSString *)time place:(NSString *)place classname:(NSString *)classname;
+//- (void)SRAlertDismiss;
 @end
 
 typedef void(^AlertViewDidSelectAction)(AlertViewActionType actionType);
@@ -120,8 +120,8 @@ typedef void(^AlertViewDidSelectAction)(AlertViewActionType actionType);
 - (void)show;
 
 
-+ (void)sr_showAlertViewWithPlaceOrType:(ClassType)classtype Delegate:(id<SRAlertViewDelegate>)delegate;
-- (void)showalert;
+//+ (void)sr_showAlertViewWithPlaceOrType:(ClassType)classtype Delegate:(id<SRAlertViewDelegate>)delegate;
+//- (void)showalert;
 
 + (void)suger_showAlertWithView:(UIView *)alertViewBlock;
 

@@ -9,8 +9,9 @@
 #import "HomeViewController.h"
 #import "NavigationView.h"
 
-#import "BannerCell.h"
 #import "DetailCell.h"
+
+#import "LoginViewController.h"
 
 #import "UserViewController.h"
 #import "OrderViewController.h"
@@ -19,13 +20,29 @@
 #import "SellViewController.h"
 #import "PersonalViewController.h"
 #import "SettingViewController.h"
-
+//二级页面
 #import "ClassViewController.h"
-
+#import "LocationViewController.h"
+#import "PayViewController.h"
+#import "PGIndexBannerSubiew.h"
 #import "AppointmentView.h"
-@interface HomeViewController ()<NavigationViewDelegate,UITableViewDelegate,UITableViewDataSource,SRAlertViewDelegate,RPRingedPagesDelegate,RPRingedPagesDataSource>
+#import "ActivityViewController.h"
+//model
+#import "HomeModel.h"
+#import "ClassModel.h"
+#import "NSString+Suger.h"
+
+#import "SugerAlertView.h"
+#import "ADAlertView.h"
+@interface HomeViewController ()<NavigationViewDelegate,UITableViewDelegate,UITableViewDataSource,SRAlertViewDelegate,NewPagedFlowViewDataSource,NewPagedFlowViewDelegate,SugerAlertViewDelegate>
 {
     BOOL persenMessage;
+    UIView * bannerView;
+    //课程介绍滑动到第几页
+    NSInteger page_index;
+    NSArray * data;
+    BOOL first;
+    BOOL LOAD;
 }
 /**
  自定制导航栏
@@ -40,6 +57,7 @@
 @property (nonatomic , strong) UIButton * ExerciseBtn;
 
 
+@property (nonatomic , strong) NewPagedFlowView * pageFlowView;
 @property (nonatomic , strong) RPRingedPages * pages;
 
 
@@ -53,72 +71,132 @@
     self.navigationController.navigationBar.hidden = YES;
     self.navigationController.navigationBar.alpha = 0;
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
-//    self.navigationController.navigationBar.translucent = NO;
-//    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
-    
-//    [UIApplication sharedApplication].statusBarHidden = NO;
+    if (!LOAD) {
+        [self Reloddata];
+    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loactionView:) name:@"location" object:nil];
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    LOAD = NO;
 
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    LOAD = YES;
     //背景色
     self.view.backgroundColor = THEMECOLOR;
     [self InitData];
     [self CreatNavigationView];
     [self CreateUI];
-    if (!persenMessage) {
-        [self loadPersent];
-    }
-    [self Reloddata];
     
     
     // Do any additional setup after loading the view from its nib.
 }
-- (void)loadPersent{
-    NSString * url = [NSString stringWithFormat:@"%@api/?method=index.index",TBASEURL];
+- (void)Reloddata{
+//    NSString * urll =  @"http://www.guodongwl.com:8065/userlogin/?number=18618263726&code=1234";
+//[HttpRequest PostHttpwithUrl:urll andparameters:nil andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
+//    
+//} andfailBlock:^(NSError *error) {
+//    
+//}];
+//
+    [self.dataArr removeAllObjects];
     
+    NSString * url = [NSString stringWithFormat:@"%@api/?method=index.index",BASEURL];
     [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary * responseObject) {
         if ([[responseObject objectForKey:@"rc"] integerValue] == 3) {
+            [SRAlertView sr_showAlertViewWithTitle:@"提示" message:@"您的身份认证已过期,请前去登陆" leftActionTitle:@"确定" rightActionTitle:@"取消" animationStyle:AlertViewAnimationZoom delegate:self];
+        }else{
+            NSLog(@"数据如下:**************************************\n%@",responseObject);
+            NSDictionary * dict = responseObject[@"data"];
+            //套餐介绍
+            NSDictionary * package = dict[@"package_info"];
+            HomeModel * model = [[HomeModel alloc]init];
+            [model setValuesForKeysWithDictionary:package];
+            model.Cell_Height = [HttpRequest sizeWithText:model.intro font:[UIFont systemFontOfSize:HEIGHT_6(17)] maxWidth:SCREEN_W - 30].height + SCREEN_H - 150;
+            [self.dataArr addObject:model];
             
+            //课程
+            NSArray * course = dict[@"course"];
+            for (NSDictionary * dic in course) {
+                HomeModel * model = [[HomeModel alloc]init];
+                [model setValuesForKeysWithDictionary:dic];
+                CGSize size = [HttpRequest sizeWithText:model.intro font:[UIFont systemFontOfSize:HEIGHT_6(17)] maxWidth:SCREEN_W - 30];
+                model.Cell_Height = size.height + SCREEN_H - 150;
+                [self.dataArr addObject:model];
+            }
+            //是否有弹窗(首次课99元的弹窗)
+            NSDictionary * firstDic = dict[@"first_info"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self createTableViewBannerView];
+                [self.TableV reloadData];
+
+                if ([firstDic[@"isfirst"] boolValue]) {
+                    [self showFirstClassAlertViewWith:firstDic[@"first_img"]];
+                }
+                
+            });
         }
-        
     } andfailBlock:^(NSError *error) {
         [HttpRequest showAlert];
     }];
-//
     
 }
 
 #pragma mark 初始化数据
 - (void)InitData{
+    data = [NSArray arrayWithObjects:@"登陆",@"welcome",@"登陆",@"welcome",@"登陆",@"welcome",@"登陆", nil];
     self.dataArr = [[NSMutableArray alloc]init];
+    page_index = 0;
 }
 #pragma mark 加载数据
-- (void)Reloddata{
-//    [SVProgressHUD showWithStatus:@"正在加载"];
-//    [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeNative];
+- (void)loadPersent{
     
-    
-    self.dataArr = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",nil];
-    
-    [self createTableViewBannerView];
-    [self.TableV reloadData];
-    [self.pages reloadData];
+    NSString * url = [NSString stringWithFormat:@"%@api/?method=diary.personal_list",BASEURL];
+    [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary *responseObject) {
+        if ([[responseObject objectForKey:@"rc"] integerValue] == 0) {
+            NSArray * arr = responseObject[@"data"];
+            if (arr.count) {
+                NSDictionary * dic = arr[0];
+                NSString * person_id = dic[@"package_id"];
+                [Default setObject:person_id forKey:@"person_id"];
+            }else{
+                [Default setObject:@"" forKey:@"person_id"];
+            }
+        }else{
+            [Default setBool:NO forKey:@"login"];
+            LoginViewController * login = [[LoginViewController alloc]init];
+            login.LoginBtn.hidden = NO;
+            [self presentViewController:login animated:YES completion:nil];
+        }
+    } andfailBlock:^(NSError *error) {
+        
+    }];
 }
 - (void)createTableViewBannerView{
-    UIView * view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(400))];
+    bannerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(350))];
     
-    self.pages = [[RPRingedPages alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(400))];
-    _pages.carousel.pageScale = 0.8;
-    self.pages.carousel.mainPageSize = CGSizeMake(WIDTH_6(280), 320);
-    _pages.delegate = self;
-    _pages.dataSource = self;
-    [view addSubview:_pages];
-    _TableV.tableHeaderView = view;
+    NewPagedFlowView *pageFlowView = [[NewPagedFlowView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(350))];
+    pageFlowView.backgroundColor = THEMECOLOR;
+    pageFlowView.delegate = self;
+    pageFlowView.dataSource = self;
+    pageFlowView.minimumPageScale = 0.85;
+    pageFlowView.isOpenAutoScroll = NO;
+    //初始化pageControl
+    UIPageControl *pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, pageFlowView.frame.size.height - 10, SCREEN_W, 8)];
+    pageControl.pageIndicatorTintColor = MAKA_JIN_COLOR;
+    pageFlowView.pageControl = pageControl;
+    [pageFlowView addSubview:pageControl];
+
+    UIScrollView *bottomScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(350))];
+    [pageFlowView reloadData];
+    [bottomScrollView addSubview:pageFlowView];
+    [bannerView addSubview:bottomScrollView];
+    
+    self.pageFlowView = pageFlowView;
+    
+    _TableV.tableHeaderView = bannerView;
 }
 - (void)CreateUI{
     
@@ -133,11 +211,10 @@
     [self.view addSubview:self.TableV];
     
     self.ExerciseBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, WIDTH_6(244), HEIGHT_6(40))];
-    self.ExerciseBtn.center = CGPointMake(self.view.center.x, SCREEN_H - WIDTH_6(49 / 2.0));
-    
-    [self.ExerciseBtn setTitle:@"约    炼" forState:UIControlStateNormal];
+    self.ExerciseBtn.center = CGPointMake(SCREEN_W / 2, SCREEN_H - WIDTH_6(49 / 2.0));
+    [self.ExerciseBtn setTitle:@"约     炼" forState:UIControlStateNormal];
     self.ExerciseBtn.titleLabel.font = FONT(@"", 44);
-    
+    [self.ExerciseBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.ExerciseBtn.layer.cornerRadius = WIDTH_6(20);
     self.ExerciseBtn.layer.masksToBounds = YES;
     self.ExerciseBtn.backgroundColor = COLOR(227, 209, 191);
@@ -161,67 +238,138 @@
 }
 #pragma mark 约炼按钮点击事件
 - (void)ExerciseBtnClick:(UIButton *)ExerciseBtn{
-    [SRAlertView sr_showAlertViewWithPlaceOrType:ClassTypeClass Delegate:self];
+    WeakSelf
+    self.ExerciseBtn.userInteractionEnabled = NO;
+
+    if ([HttpRequest judgeWhetherUserLogin]) {
+        if (page_index == 0) {
+            self.ExerciseBtn.userInteractionEnabled = YES;
+            SellViewController * sell = [[SellViewController alloc]init];
+            [self.navigationController pushViewController:sell animated:YES];
+            
+            return;
+        }
+        HomeModel * model = self.dataArr[page_index];
+        NSString * url = [NSString stringWithFormat:@"%@api/?method=gdcourse.course&class_id=%ld&types=1",BASEURL,(long)model.class_id];
+        [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
+        [SVProgressHUD showWithStatus:@"正在加载"];
+        
+        [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary * _Nonnull responseObject) {
+            
+            if ([[responseObject objectForKey:@"rc"] integerValue] == 3) {
+                
+            }else{
+                NSDictionary * dict = responseObject[@"data"];
+                ClassModel * classmodel = [[ClassModel alloc]init];
+                classmodel.class_name = model.course_name;
+                classmodel.class_id = model.class_id;
+                classmodel.fun_id = model.func_id;
+                [classmodel setValuesForKeysWithDictionary:dict];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [SugerAlertView sr_showAlertViewWithPlaceOrType:ClassTypeWithClass Delegate:self model:classmodel];
+                    [SVProgressHUD dismiss];
+                });
+            }
+        } andfailBlock:^(NSError * _Nonnull error) {
+            [HttpRequest showAlert];
+            weakSelf.ExerciseBtn.userInteractionEnabled = YES;
+        }];
+        
+    }else{
+        self.ExerciseBtn.userInteractionEnabled = YES;
+
+        LoginViewController * login = [[LoginViewController alloc]init];
+        login.back = NO;
+        [self presentViewController:login animated:YES completion:nil];
+    }
+    
+}
+#pragma mark NewPagedFlowView Delegate
+- (CGSize)sizeForPageInFlowView:(NewPagedFlowView *)flowView {
+    return CGSizeMake(WIDTH_6(250), HEIGHT_6(289));
 }
 
-#pragma mark pagesDelegate(tableview头视图代理)
-- (NSInteger)numberOfItemsInRingedPages:(RPRingedPages *)pages {
-    return 4;
+- (void)didSelectCell:(UIView *)subView withSubViewIndex:(NSInteger)subIndex {
+    
+//    NSLog(@"点击了第%ld张图",(long)subIndex + 1);
+//    if (subIndex == 0) {
+//        SellViewController * sell = [[SellViewController alloc]init];
+//        [self.navigationController pushViewController:sell animated:YES];
+//    }else{
+//        HomeModel * model = self.dataArr[subIndex];
+//        ClassViewController * classVC = [[ClassViewController alloc]init];
+//        classVC.class_id = [NSString stringWithFormat:@"%ld",model.func_id];
+//        [self.navigationController pushViewController:classVC animated:YES];
+//    }
+    [self ExerciseBtnClick:self.ExerciseBtn];
+}
+
+#pragma mark NewPagedFlowView Datasource
+- (NSInteger)numberOfPagesInFlowView:(NewPagedFlowView *)flowView {
+    
     return self.dataArr.count;
 }
-- (UIView *)ringedPages:(RPRingedPages *)pages viewForItemAtIndex:(NSInteger)index {
+
+- (UIView *)flowView:(NewPagedFlowView *)flowView cellForPageAtIndex:(NSInteger)index{
     
-    UIImageView *imageV = (UIImageView *)[pages dequeueReusablePage];
-    if (![imageV isKindOfClass:[UIImageView class]]) {
-        imageV = [UIImageView new];
-        imageV.image = [UIImage imageNamed:@"2-1.jpg"];
-        imageV.layer.backgroundColor = [UIColor redColor].CGColor;
-        imageV.layer.cornerRadius = 5;
-        imageV.layer.masksToBounds = YES;
-        
-        UIButton * button = [[UIButton alloc]init];
-        button.center = CGPointMake(WIDTH_6(135), 190);
-        
-        button.layer.cornerRadius = 25;
-        button.layer.masksToBounds = YES;
-        button.layer.borderColor = COLOR(227, 209, 191).CGColor;
-        button.layer.borderWidth = 2;
-        [imageV addSubview:button];
-        [button mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.center.offset(0);
-            make.width.and.height.mas_equalTo(50);
-        }];
+    PGIndexBannerSubiew *bannerV = (PGIndexBannerSubiew *)[flowView dequeueReusableCell];
+    if (!bannerV) {
+        bannerV = [[PGIndexBannerSubiew alloc] initWithFrame:CGRectMake(0, 0, WIDTH_6(250), HEIGHT_6(289))];
+        bannerV.layer.cornerRadius = 5;
+        bannerV.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
+        bannerV.layer.shadowOffset = CGSizeMake(4,4);//shadowOffset阴影偏移,x向右偏移4，y向下偏移4，默认(0, -3),这个跟shadowRadius配合使用
+        bannerV.layer.shadowOpacity = 0.5;//阴影透明度，默认0
+        bannerV.layer.shadowRadius = 4;//阴影半径，默认3
+//        bannerV.layer.masksToBounds = YES;
+        bannerV.mainImageView.contentMode = UIViewContentModeScaleAspectFit;
     }
-    return imageV;
-}
-#pragma mark 代理方法
-- (void)didSelectedCurrentPageInPages:(RPRingedPages *)pages {
-    NSLog(@"pages selected, the current index is %zd", pages.currentIndex);
-    ClassViewController * classVC = [[ClassViewController alloc]init];
-    [self.navigationController pushViewController:classVC animated:YES];
     
-}
-- (void)pages:(RPRingedPages *)pages didScrollToIndex:(NSInteger)index {
-    NSLog(@"pages scrolled to index: %zd", index);
-    DetailCell * cell = [_TableV cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    //在这里下载网络图片
+    HomeModel * model = self.dataArr[index];
+    [bannerV.mainImageView sd_setImageWithURL:[NSURL URLWithString:model.img]placeholderImage:[UIImage imageNamed:@""]];
     
-    [cell createCellWith:@"变换"];
+    return bannerV;
 }
 
+- (void)didScrollToPage:(NSInteger)pageNumber inFlowView:(NewPagedFlowView *)flowView {
+    page_index = pageNumber;
+//    if (pageNumber == 0) {
+//        self.ExerciseBtn.userInteractionEnabled = NO;
+//    }else if ([[Default objectForKey:@"citycode"] integerValue]){
+//        self.ExerciseBtn.userInteractionEnabled = YES;
+//    }
+    [self.TableV reloadData];
+    NSLog(@"TestViewController 滚动到了第%ld页",(long)pageNumber);
+}
 #pragma mark tableviewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 1;
+    if (self.dataArr.count > 0) {
+        return 1;
+    }
+    return 0;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
     DetailCell * cell = [tableView dequeueReusableCellWithIdentifier:@"DetailCell"];
     cell.userInteractionEnabled = NO;
-    
+    if (self.dataArr.count > 0) {
+        HomeModel * model = self.dataArr[page_index];
+        if (page_index == 0) {
+            [cell createCellWith:model.intro title:model.name];
+        }else{
+            [cell createCellWith:model.intro title:model.course_name];
+        }
+    }
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    if (self.dataArr.count > 0) {
+        HomeModel * model = self.dataArr[page_index];
+        return model.Cell_Height;
+    }
     return SCREEN_H - 64 - WIDTH_6(49);
 }
 
@@ -229,6 +377,24 @@
 - (void)PushViewControllerWithKey:(NSInteger)key{
     //NSLog(@"第几行%ld",key);
     
+    if (![HttpRequest judgeWhetherUserLogin]) {
+        switch (key) {
+            case 6:
+            {
+                self.ExerciseBtn.userInteractionEnabled = YES;
+            }
+                break;
+                
+            default:
+            {
+                LoginViewController * login = [[LoginViewController alloc]init];
+                login.backBtn.hidden = NO;
+                [self presentViewController:login animated:YES completion:nil];
+                return;
+            }
+                break;
+        }
+    }
     switch (key) {
         case 0://账户
         {
@@ -248,14 +414,14 @@
             [self.navigationController pushViewController:order animated:YES];
         }
             break;
-        case 3://优惠劵
-        {
-            PreferentialViewController * preferential = [[PreferentialViewController alloc]init];
-            [self.navigationController pushViewController:preferential animated:YES];
-            
-        }
-            break;
-        case 4://购买套餐
+//        case 3://优惠劵
+//        {
+//            PreferentialViewController * preferential = [[PreferentialViewController alloc]init];
+//            [self.navigationController pushViewController:preferential animated:YES];
+//            
+//        }
+//            break;
+        case 3://购买套餐
         {
             SellViewController * sell = [[SellViewController alloc]init];
             [self.navigationController pushViewController:sell animated:YES];
@@ -263,14 +429,14 @@
             
         }
             break;
-        case 5://健身数据
+        case 4://健身数据
         {
             BodyDataViewController * bodydata = [[BodyDataViewController alloc]init];
             [self.navigationController pushViewController:bodydata animated:YES];
 
         }
             break;
-        case 6://私人定制
+        case 5://私人定制
         {
             PersonalViewController * personal = [[PersonalViewController alloc]init];
             [self.navigationController pushViewController:personal animated:YES];
@@ -286,23 +452,74 @@
         }
             break;
     }
-    
-    
 }
+//跳转活动页
+- (void)PushActivityViewControllerWithUrl:(NSString *)url{
+    if ([HttpRequest judgeWhetherUserLogin]) {
+        SellViewController * sell = [[SellViewController alloc]init];
+        [self.navigationController pushViewController:sell animated:YES];
+    }else{
+        LoginViewController * login = [[LoginViewController alloc]init];
+        login.backBtn.hidden = NO;
+        [self presentViewController:login animated:YES completion:nil];
+
+    }
+    
+//    ActivityViewController * activit = [[ActivityViewController alloc]init];
+//    activit.url = url;
+//    [self.navigationController pushViewController:activit animated:YES];
+}
+#pragma mark 自定制导航栏代理
 - (void)NavigationViewMenuButtonClick{
     
     [self.mm_drawerController toggleDrawerSide:MMDrawerSideLeft animated:YES completion:^(BOOL finished) {
-        
     }];
 }
-
+- (void)NavigationViewRightBtnClick{
+//    LocationViewController * location = [[LocationViewController alloc]init];
+//    
+//    [self.navigationController pushViewController:location animated:YES];
+}
 #pragma mark 下单代理方法
-- (void)orderWithName:(NSString *)name tel:(NSString *)tel date:(NSString *)date time:(NSString *)time place:(NSString *)place classname:(NSString *)classname{
-    
-    
+
+- (void)OrderWithClassID:(NSString *)class_id rmb:(NSInteger)rmb classname:(NSString *)classname orderid:(NSString *)orderid{
+    self.ExerciseBtn.userInteractionEnabled = YES;
+    PayViewController * pay = [[PayViewController alloc]init];
+    pay.class_id = [NSString stringWithFormat:@"%@",class_id];
+    pay.ispackage = NO;
+    pay.name = classname;
+    pay.price = rmb;
+    pay.order_id = orderid;
+    [self.navigationController pushViewController:pay animated:YES];
 }
 
-
+- (void)SRAlertDismiss{
+    self.ExerciseBtn.userInteractionEnabled = YES;
+}
+- (void)alertViewDidSelectAction:(AlertViewActionType)actionType{
+    if (actionType == AlertViewActionTypeLeft) {
+        
+    }
+}
+- (void)loactionView:(NSNotification *)info{
+    [self Reloddata];
+    NSString * location = [info.userInfo objectForKey:@"citycode"];
+    if ([location integerValue]) {
+        [self.ExerciseBtn setTitle:@"约     炼" forState:UIControlStateNormal];
+    }else{
+        [self.ExerciseBtn setTitle:@"所在城市未覆盖" forState:UIControlStateNormal];
+        self.ExerciseBtn.userInteractionEnabled = NO;
+    }
+}
+- (void)showFirstClassAlertViewWith:(NSString *)url{
+    if (!first) {
+        first = YES;
+        [ADAlertView showAlertViewWithurl:url];
+    }
+}
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"location" object:nil];
+}
 /*
 #pragma mark - Navigation
 

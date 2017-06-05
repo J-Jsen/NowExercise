@@ -7,19 +7,34 @@
 //
 
 #import <UIKit/UIKit.h>
-
 typedef enum : NSUInteger {
-    CellImageWithDetail,
-    CellImageWithTitle,
+    CellImage,
+    CellTitle,
+    CellBtn,
 } CellImageViewType;
 
+@protocol  UserTableViewDelegate<NSObject>
+
+- (void)detailTitle:(NSString *)str andindex:(NSInteger )index;
+@end
 
 @interface UserTableViewCell : UITableViewCell
 
-@property (nonatomic , assign) BOOL titleImageViewHidden;
-
 @property (nonatomic , assign) CellImageViewType CellType;
 
+@property (nonatomic ,strong) UILabel * titleLabel;
+
+@property (nonatomic , strong)  UIImageView * detailImageV;
+
+@property (nonatomic , assign) NSInteger index;
+
+@property (nonatomic , weak) id<UserTableViewDelegate>delegate;
+
 - (void)createCellWithCellType:(CellImageViewType)CellType;
+- (void)createCellWithStr:(NSString *)str;
+- (void)CellTFCanUse;
+- (void)hide;
+- (void)creatCellWithTitle:(NSString *)title;
+- (void)createCellImage:(UIImage *)image;
 
 @end

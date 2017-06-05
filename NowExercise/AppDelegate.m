@@ -15,8 +15,20 @@
 
 #import "WelcomeViewController.h"
 
-@interface AppDelegate ()
+#import "Reachability.h"
 
+// iOS10注册APNs所需头文件
+#ifdef NSFoundationVersionNumber_iOS_9_x_Max
+#import <UserNotifications/UserNotifications.h>
+#endif
+
+#import <CoreLocation/CLLocationManagerDelegate.h>
+#import <CoreLocation/CoreLocation.h>
+
+@interface AppDelegate ()<JPUSHRegisterDelegate>
+{
+    CLLocationManager *_locationManager;
+}
 
 @end
 
@@ -29,6 +41,48 @@
     //导航栏上的颜色
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0,-60) forBarMetrics:UIBarMetricsDefault];
+    /*****************开启定位设置*******************/
+    //定位管理器
+    _locationManager = [[CLLocationManager alloc] init];
+    //如果没有授权则请求用户授权
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+        [_locationManager requestWhenInUseAuthorization];
+    }
+    /********************** Jpush 推送 ****************************/
+    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
+    entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        // 可以添加 定义categories
+        // NSSet<UNNotificationCategory *> *categories for iOS10 or later
+        // NSSet<UIUserNotificationCategory *> *categories for iOS8 and iOS9
+    }
+    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
+    //NSString *advertisingId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+    
+    //Required
+    //    [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge |
+    //                                                      UIUserNotificationTypeSound |
+    //                                                      UIUserNotificationTypeAlert)
+    //                                          categories:nil];
+    
+    [JPUSHService setupWithOption:launchOptions appKey:JpushAppKey
+                          channel:@"channel"
+                 apsForProduction:FALSE
+            advertisingIdentifier:nil];
+    
+#pragma mark 添加网络监控通知
+    [[NSNotificationCenter defaultCenter] addObserver:self
+     
+                                             selector:@selector(reachabilityChanged:)
+     
+                                                 name:kReachabilityChangedNotification
+     
+                                               object:nil];
+    
+    Reachability *reach = [Reachability reachabilityWithHostName:@"www.guodongwl.com"];
+    
+    [reach startNotifier];
+
     /**************************初始化app*********************/
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
 #pragma mark 判断是否是新版本
@@ -49,6 +103,7 @@
         WelcomeViewController * welcomeView = [[WelcomeViewController alloc]init];
         self.window.rootViewController      = welcomeView;
         LoginViewController * loginView     = [[LoginViewController alloc]init];
+        loginView.back = YES;
         welcomeView.WelcomeChangeRootView   = ^{
             self.window.rootViewController  = loginView;
             [defaul setObject:app_version forKey:@"app_version"];
@@ -78,6 +133,39 @@
     return drawerController;
     
 }
+- (void)application:(UIApplication*)application
+didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+    
+    /// Required - 注册 DeviceToken
+    [JPUSHService registerDeviceToken:deviceToken];
+    
+    // NSLog(@"regusterId %@",[JPUSHService registrationID]);
+}
+- (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)userInfo
+{
+    // JPush
+    [JPUSHService handleRemoteNotification:userInfo];
+}
+- (void)application:(UIApplication*)application didReceiveRemoteNotification:(NSDictionary*)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    /*
+     aps =     {
+     alert = "\U8fd0\U52a8\U5185\U5bb9\U53ca\U5f3a\U5ea6\U5efa\U8bae";
+     badge = 1;
+     sound = default;
+     };
+     img = "http://192.168.1.90:8080/img/pic_folder/notice/panda1_WJ5CDjg.png";
+     type = hold;[userInfo objectForKey:@"img"]
+     */
+    
+    
+    [JPUSHService handleRemoteNotification:userInfo];
+}
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+    // NSLog(@"ERROR   %@",error);
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -99,8 +187,52 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
+#pragma mark 实现网络监控方法
+-(void)reachabilityChanged:(NSNotification *)notification
+{
+    Reachability *reach = [notification object];
+    
+    if([reach isKindOfClass:[Reachability class]]){
+        
+        NetworkStatus statuWetwork = [reach currentReachabilityStatus];
+        
+        NSLog(@"statuWetwork  %ld",(long)statuWetwork);
+        switch (statuWetwork) {
+            case 0:
+            {
+                [HttpRequest showAlertWithTitle:@"网络连接中断"];
+            }
+                break;
+                
+            default:
+                break;
+        }
+        //Insert your code here
+        
+    }
+}
 
+#pragma mark- JPUSHRegisterDelegate
 
+// iOS 10 Support
+- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler {
+    // Required
+    NSDictionary * userInfo = notification.request.content.userInfo;
+    if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        [JPUSHService handleRemoteNotification:userInfo];
+    }
+    completionHandler(UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以选择设置
+}
+
+// iOS 10 Support
+- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
+    // Required
+    NSDictionary * userInfo = response.notification.request.content.userInfo;
+    if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        [JPUSHService handleRemoteNotification:userInfo];
+    }
+    completionHandler();  // 系统要求执行这个方法
+}
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }

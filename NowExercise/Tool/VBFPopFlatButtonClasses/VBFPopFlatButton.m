@@ -33,7 +33,7 @@
     if (self) {
         self.currentButtonType = initType;
         self.currentButtonStyle = bStyle;
-        self.lineThickness = 2;
+        self.lineThickness = 3;
         self.lineRadius = 0;
         self.animateToStartPosition = animateToInitialState;
         self.tintColor = [UIColor whiteColor];

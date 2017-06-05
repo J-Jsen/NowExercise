@@ -13,53 +13,66 @@
 @end
 
 @implementation LoginViewController
-
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [UIApplication sharedApplication].statusBarHidden = NO;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [UIApplication sharedApplication].statusBarHidden = YES;
     self.navigationController.navigationBarHidden = YES;
     
-    self.numberTF.layer.borderWidth = 1;
-    self.numberTF.layer.borderColor = THEMECOLOR.CGColor;
     [self.numberTF setValue:[UIColor whiteColor] forKeyPath:@"_placeholderLabel.textColor"];
-    self.numberTF.layer.cornerRadius = 5;
-    self.numberTF.layer.masksToBounds = YES;
-    
-    self.SecurityTF.layer.borderColor = THEMECOLOR.CGColor;
-    self.SecurityTF.layer.borderWidth = 1;
+    UIImageView * imageV = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 25, 40)];
+    imageV.image = [UIImage imageNamed:@"手机号.png"];
+    [self.numberTF setLeftView:imageV];
+    self.numberTF.leftViewMode = UITextFieldViewModeAlways;
+    imageV.contentMode = UIViewContentModeLeft;
     [self.SecurityTF setValue:[UIColor whiteColor] forKeyPath:@"_placeholderLabel.textColor"];
-    self.SecurityTF.layer.cornerRadius = 5;
-    self.SecurityTF.layer.masksToBounds = YES;
-    
-    self.SecurityBtn.layer.borderWidth = 1;
-    self.SecurityBtn.layer.borderColor = THEMECOLOR.CGColor;
-    self.SecurityBtn.layer.cornerRadius = 5;
+    UIImageView * imageV1 = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 25, 40)];
+    imageV1.contentMode = UIViewContentModeLeft;
+    imageV1.image = [UIImage imageNamed:@"验证码.png"];
+    [self.SecurityTF setLeftView:imageV1];
+    self.SecurityTF.leftViewMode = UITextFieldViewModeAlways;
+
+    self.SecurityBtn.layer.cornerRadius = 17.5;
     self.SecurityBtn.layer.masksToBounds = YES;
     
     self.LoginBtn.layer.masksToBounds = YES;
-    self.LoginBtn.layer.cornerRadius = 5;
-    self.LoginBtn.layer.borderWidth = 1;
-    self.LoginBtn.layer.borderColor = THEMECOLOR.CGColor;
-    
+    self.LoginBtn.layer.cornerRadius = 22;
+    self.timeLabel.layer.cornerRadius = 17.5;
+    self.timeLabel.layer.masksToBounds = YES;
+    if (self.back) {
+        self.backBtn.hidden = YES;
+    }else{
+        self.backBtn.hidden = NO;
+    }
     // Do any additional setup after loading the view from its nib.
 }
+- (IBAction)SelfDisMiss:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
+
 //验证码
 - (IBAction)TestGetCode:(id)sender {
     if ([HttpRequest phoneValidateNumber:self.numberTF.text]) {
-        [self.SecurityTF resignFirstResponder];
+        [self.SecurityTF becomeFirstResponder];
         /***************网络请求token值*********************/
         [self getTokenStr];
         
     }else{
-        [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+        [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:nil];
     }
     
 }
 - (IBAction)ChangeRootView:(id)sender {
     if (![HttpRequest phoneValidateNumber:self.numberTF.text]) {
-        [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+        [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"请正确输入您的手机号码" leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:nil];
     }else{
         if (self.SecurityTF.text.length == 0) {
-            [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"验证码不能为空,请重新输入" leftActionTitle:@"确定" rightActionTitle:@"" animationStyle:AlertViewAnimationZoom selectAction:nil];
+            [SRAlertView sr_showAlertViewWithTitle:@"提  示" message:@"验证码不能为空,请重新输入" leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:nil];
         }else{
             [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
             [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
@@ -69,12 +82,34 @@
             NSDictionary * dic = @{@"number"       : self.numberTF.text,
                                    @"code"         : self.SecurityTF.text,
                                    @"registerID"   : [JPUSHService registrationID]?[JPUSHService registrationID]:@""};
-            NSString * loginUrl = [NSString stringWithFormat:@"%@userlogin/",TBASEURL];
+            NSString * loginUrl = [NSString stringWithFormat:@"%@userlogin/",BASEURL];
+            WeakSelf
             [HttpRequest PostHttpwithUrl:loginUrl andparameters:dic andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
                 [Default setBool:YES forKey:@"login"];
-                [Default setObject:self.numberTF.text forKey:@"phone"];
+                [Default setObject:weakSelf.numberTF.text forKey:@"phone"];
+                
+                NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+                [dict setObject:@"ture" forKey:@"login"];
+//                NSLog(@"%@",responseObject);
+                // NSHomeDirectory() 沙盒根目录的路径
+                NSString *path = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/d.plist"];
+                [dict writeToFile:path atomically:YES];
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGIN" object:nil];
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    self.LoginChangeRootView();
+                    if (weakSelf.back) {
+                        weakSelf.LoginChangeRootView();
+                        
+                    }else{
+                        if ([weakSelf.delegate respondsToSelector:@selector(login)]) {
+                            [weakSelf.delegate login];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGIN" object:nil];
+
+//                            [HttpRequest judgeWhetherUserLogin];
+                        }
+                        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+                        
+                    }
                 });
             } andfailBlock:^(NSError *error) {
                 [HttpRequest showAlert];
@@ -85,7 +120,7 @@
 }
 //网络请求token值
 - (void)getTokenStr{
-    NSString* getTokenUrl = [NSString stringWithFormat:@"%@token/?number=%@", TBASEURL, self.numberTF.text];
+    NSString* getTokenUrl = [NSString stringWithFormat:@"%@token/?number=%@", BASEURL, self.numberTF.text];
     [HttpRequest PostHttpwithUrl:getTokenUrl andparameters:nil andProgress:nil andsuccessBlock:^(id responseObject) {
         /*
          请求参数：number=18618265727&timestamp=12456&sign=e1a4b2dd5816ff40d125f836669652eb
@@ -106,10 +141,10 @@
         // 将手机号和时间戳放入token数组
         [tokenArray addObject:photoNumber];
         [tokenArray addObject:timeString];
-        NSMutableDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+//        NSMutableDictionary * dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
         // 接收token值
-        if ([[dic allKeys] containsObject:@"token"]) {
-            NSString *token = [dic objectForKey:@"token"];
+        if ([[responseObject allKeys] containsObject:@"token"]) {
+            NSString *token = [responseObject objectForKey:@"token"];
             [tokenArray addObject:token];
         }
         // 数组排序
@@ -127,7 +162,7 @@
         
         /***************网络请求验证码*********************/
         
-        NSString* getMessageUrl = [NSString stringWithFormat:@"%@sendcode/", TBASEURL];
+        NSString* getMessageUrl = [NSString stringWithFormat:@"%@sendcode/", BASEURL];
         NSDictionary* messagedict = @{ @"number" : self.numberTF.text,
                                        @"sign" : MDString,
                                        @"time" : timeString
@@ -136,9 +171,7 @@
             
         } andsuccessBlock:^(NSDictionary * responseObject) {
             NSLog(@"%@",responseObject);
-            [self startWithTime:60 title:@"获取验证码" countDownTitle:@"s后重新获取" countColor:[UIColor grayColor]];
-
-            
+            [self startWithTime:60 title:@"获取验证码" countDownTitle:@"s" countColor:[UIColor grayColor]];
         } andfailBlock:^(NSError *error) {
             [HttpRequest showAlert];
         }];
@@ -185,7 +218,14 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return YES;
+}
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.numberTF resignFirstResponder];
+    [self.SecurityBtn resignFirstResponder];
+}
 /*
 #pragma mark - Navigation
 

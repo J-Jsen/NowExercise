@@ -7,12 +7,12 @@
 //
 
 #import "SellViewController.h"
-
 #import "SellCell.h"
 
+#import "Sellmodel.h"
 #define SELL_CELL @"SELLCELL"
 
-
+#import "PayViewController.h"
 @interface SellViewController ()<UITableViewDelegate,UITableViewDataSource>
 {
     NSMutableArray * dataArr;
@@ -28,6 +28,7 @@
 }
 //自定制导航栏
 - (void)createNavigationView{
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     self.navigationController.navigationBarHidden = NO;
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeNone];
 
@@ -49,11 +50,11 @@
     self.view.backgroundColor = THEMECOLOR;
     [self initData];
     [self createUI];
-    
+    [self loadData];
     // Do any additional setup after loading the view from its nib.
 }
 - (void)initData{
-    dataArr = [[NSMutableArray alloc]initWithObjects:@"特想套餐",@"白银套餐",@"黄金套餐",@"铂金套餐",@"钻石套餐" ,nil];
+    dataArr = [[NSMutableArray alloc]init];
     
 }
 - (void)createUI{
@@ -69,6 +70,30 @@
     
     
 }
+- (void)loadData{
+    [dataArr removeAllObjects];
+    NSString * url = [NSString stringWithFormat:@"%@api/?method=package.list",BASEURL];
+    [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary *responseObject) {
+        if ([[responseObject objectForKey:@"rc"] integerValue] == 3) {
+
+            
+        }else{
+            NSDictionary * dict = responseObject[@"data"];
+            NSArray * arr = dict[@"package_list"];
+            for (NSDictionary * dic in arr) {
+                Sellmodel * model = [[Sellmodel alloc]init];
+                [model setValuesForKeysWithDictionary:dic];
+                [dataArr addObject:model];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [tableV reloadData];
+            });
+        }
+    } andfailBlock:^(NSError *error) {
+        [HttpRequest showAlert];
+    }];
+}
+
 - (void)tableViewAddTableHeaderView{
     UILabel * headerView = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(50))];
     headerView.backgroundColor = THEMECOLOR;
@@ -85,6 +110,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     SellCell * cell = [[SellCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:SELL_CELL];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    if (dataArr.count > 0) {
+        Sellmodel * model = dataArr[indexPath.row];
+        [cell createCellWithModel:model];
+    }
     
     return cell;
 }
@@ -94,21 +123,34 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"hadhjsakhd");
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 //    MBProgressHUD * hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    hud.mode = MBProgressHUDModeAnnularDeterminate;
+//    hud.mode = MBProgressHUDModeText;
 //    hud.activityIndicatorColor = [UIColor blueColor];
 //    hud.color = [UIColor blackColor];
 //    hud.labelText = @"cehngggg";
+//    hud.labelFont = [UIFont boldSystemFontOfSize:17];
 //    hud.dimBackground = YES;
 //    [hud setColor:MAKA_JIN_COLOR];
 //    hud.labelColor = [UIColor blackColor];
 //    hud.minSize = CGSizeMake(SCREEN_W * 0.5, HEIGHT_6(90));
 //    [hud hide:YES afterDelay:2];
-    [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
-    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
-    [SVProgressHUD showSuccessWithStatus:@"正在加载"];
-    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+//    
+//    [HttpRequest showAlertWithTitle:@"正在加载"];
+    
+//    [SVProgressHUD setBackgroundColor:MAKA_JIN_COLOR];
+//    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+//    [SVProgressHUD setMinimumSize:CGSizeMake(200, 120)];
+//    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+//    [SVProgressHUD showImage:nil status:@"加载中"];
+
+    Sellmodel * model = dataArr[indexPath.row];
+    PayViewController * pay = [[PayViewController alloc]init];
+    pay.class_id = [NSString stringWithFormat:@"%ld",(long)model.Sell_id];
+    pay.ispackage = YES;
+    pay.name = model.name;
+    pay.price = model.price;
+    [self.navigationController pushViewController:pay animated:YES];
 //    [SVProgressHUD showWithStatus:@"正在加载"];
 }
 

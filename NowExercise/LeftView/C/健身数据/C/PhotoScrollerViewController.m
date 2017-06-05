@@ -24,17 +24,10 @@
     // Do any additional setup after loading the view from its nib.
 }
 - (void)createUI{
+    self.view.backgroundColor = [UIColor blackColor];
     scrollV = [[UIScrollView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     scrollV.pagingEnabled = YES;
-//    scrollV.maximumZoomScale = 1.0;
-//    scrollV.minimumZoomScale = 1.0;
-    //scrollV.bounces = NO;
     scrollV.contentSize = CGSizeMake(SCREEN_W * 2, SCREEN_H);
-    //scrollV.indicatorStyle = UIScrollViewIndicatorStyleBlack;
-    //scrollV.showsVerticalScrollIndicator = NO;
-    //scrollV.showsHorizontalScrollIndicator = NO;
-    //scrollV.backgroundColor = [UIColor blackColor];
-    scrollV.zoomScale = 1;
     [self.view addSubview:scrollV];
     
     

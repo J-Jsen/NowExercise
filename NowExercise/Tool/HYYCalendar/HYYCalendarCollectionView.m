@@ -266,7 +266,7 @@ static NSString *const kCalendarCellReuseIde = @"HYYCalendarCollectionViewCellRu
                 month = 12;
             }
             
-            dateLabel.text = [NSString stringWithFormat:@"%ld年%ld月",(long)year, month];
+            dateLabel.text = [NSString stringWithFormat:@"%ld年%ld月",(long)year, (long)month];
             
             [_dateIndicatorView addSubview:dateLabel];
         }

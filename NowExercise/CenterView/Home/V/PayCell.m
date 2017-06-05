@@ -22,12 +22,17 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier{
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+
         imageV = [[UIImageView alloc]init];
         [self addSubview:imageV];
-        imageV.backgroundColor = [UIColor redColor];
+//        imageV.backgroundColor = [UIColor redColor];
         selectImageV = [[UIImageView alloc]init];
         [self addSubview:selectImageV];
-        selectImageV.backgroundColor = [UIColor greenColor];
+        selectImageV.layer.cornerRadius = 10;
+        selectImageV.layer.masksToBounds = YES;
+        selectImageV.layer.borderColor = MAKA_JIN_COLOR.CGColor;
+        selectImageV.layer.borderWidth = 1;
+        selectImageV.backgroundColor = THEMECOLOR;
         
         [imageV mas_makeConstraints:^(MASConstraintMaker *make) {
             make.width.and.height.mas_equalTo(HEIGHT_6(30));
@@ -36,8 +41,8 @@
         }];
         
         [selectImageV mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.width.and.height.mas_equalTo(HEIGHT_6(30));
-            make.right.offset(-10);
+            make.width.and.height.mas_equalTo(HEIGHT_6(20));
+            make.right.offset(-20);
             make.centerY.offset(0);
             
         }];
@@ -54,11 +59,11 @@
 
 - (void)selectCell{
     selectImageV.image = [UIImage imageNamed:@""];
-    selectImageV.backgroundColor = [UIColor magentaColor];
+    selectImageV.backgroundColor = MAKA_JIN_COLOR;
 }
 
 - (void)disselectCell{
-    selectImageV.backgroundColor = [UIColor greenColor];
+    selectImageV.backgroundColor = THEMECOLOR;
     selectImageV.image = [UIImage imageNamed:@""];
 }
 

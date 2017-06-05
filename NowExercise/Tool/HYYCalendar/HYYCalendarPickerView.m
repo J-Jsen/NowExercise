@@ -170,7 +170,7 @@ const NSUInteger kTimeIntervalMonth = kTimeIntervalDay * 30;
         _pickerView.dataSource = self;
         _pickerView.delegate = self;
         _pickerView.backgroundColor = [UIColor whiteColor];
-        [_pickerView selectRow:_defaultNumber - 1 inComponent:0 animated:NO];
+//        [_pickerView selectRow:_defaultNumber - 1 inComponent:0 animated:NO];
         [_pickerView selectRow:_defaultUnit - 1 inComponent:1 animated:NO];
 
     }

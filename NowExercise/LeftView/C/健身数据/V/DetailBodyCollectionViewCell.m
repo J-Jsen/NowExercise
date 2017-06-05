@@ -9,6 +9,7 @@
 #import "DetailBodyCollectionViewCell.h"
 #import "UILabel+Suger.h"
 #import "UIImageView+Suger.h"
+#import "NSString+Suger.h"
 @interface DetailBodyCollectionViewCell ()
 {
     //小圆点
@@ -70,28 +71,37 @@
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [UIColor yellowColor];
+        self.backgroundColor = [UIColor clearColor];
         self.userInteractionEnabled = YES;
         [self createUI];
-        [self loadData];
+        //[self loadData];
     }
     return self;
 }
 - (void)createUI{
     pointImageV = [[UIImageView alloc]initImageView];
+    pointImageV.backgroundColor = MAKA_JIN_COLOR;
+    pointImageV.layer.masksToBounds = YES;
+    pointImageV.layer.cornerRadius = 5;
     [self addSubview:pointImageV];
     
     timeLabel = [[UILabel alloc]initDatalabel];
     [self addSubview:timeLabel];
     
     leftImageV = [[UIImageView alloc]initImageView];
+    leftImageV.backgroundColor = [UIColor grayColor];
+    leftImageV.contentMode = UIViewContentModeScaleAspectFill;
+    leftImageV.layer.masksToBounds = YES;
     UITapGestureRecognizer * leftTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(leftTap:)];
     leftImageV.userInteractionEnabled = YES;
     [leftImageV addGestureRecognizer:leftTap];
     [self addSubview:leftImageV];
     
     rightImageV = [[UIImageView alloc]initImageView];
+    rightImageV.backgroundColor = [UIColor grayColor];
     UITapGestureRecognizer * rightTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(rightTap:)];
+    rightImageV.contentMode = UIViewContentModeScaleAspectFill;
+    rightImageV.layer.masksToBounds = YES;
     rightImageV.userInteractionEnabled = YES;
     [rightImageV addGestureRecognizer:rightTap];
     [self addSubview:rightImageV];
@@ -103,7 +113,7 @@
     [self addSubview:weightLabel];
     weight_Static_Label = [[UILabel alloc]initDatalabel];
     weight_Static_Label.backgroundColor = [UIColor redColor];
-    weight_Static_Label.font = [UIFont systemFontOfSize:HEIGHT_6(14)];
+    weight_Static_Label.font = [UIFont systemFontOfSize:HEIGHT_6(9)];
     [self addSubview:weight_Static_Label];
     
     waisLabel = [[UILabel alloc]initDatalabel];
@@ -116,20 +126,20 @@
     [self addSubview:fatLabel];
     fat_Static_Label = [[UILabel alloc]initDatalabel];
     fat_Static_Label.backgroundColor = [UIColor redColor];
-    fat_Static_Label.font = [UIFont systemFontOfSize:HEIGHT_6(14)];
+    fat_Static_Label.font = [UIFont systemFontOfSize:HEIGHT_6(9)];
     [self addSubview:fat_Static_Label];
     
     BMILabel = [[UILabel alloc]initDatalabel];
     [self addSubview:BMILabel];
     BMI_Static_Label = [[UILabel alloc]initDatalabel];
-    BMI_Static_Label.font = [UIFont systemFontOfSize:HEIGHT_6(14)];
+    BMI_Static_Label.font = [UIFont systemFontOfSize:HEIGHT_6(9)];
     BMI_Static_Label.backgroundColor = [UIColor redColor];
     [self addSubview:BMI_Static_Label];
     
     Percentage_Waist_Hip_Label = [[UILabel alloc]initDatalabel];
     [self addSubview:Percentage_Waist_Hip_Label];
     Percentage_Waist_Static_label = [[UILabel alloc]initDatalabel];
-    Percentage_Waist_Static_label.font = [UIFont systemFontOfSize:HEIGHT_6(14)];
+    Percentage_Waist_Static_label.font = [UIFont systemFontOfSize:HEIGHT_6(9)];
     Percentage_Waist_Static_label.backgroundColor = [UIColor redColor];
     [self addSubview:Percentage_Waist_Static_label];
     
@@ -170,15 +180,111 @@
     Target_Heart_Label = [[UILabel alloc]initDatalabel];
     [self addSubview:Target_Heart_Label];
     
-//    weight_Static_Label.hidden = YES;
-//    fat_Static_Label.hidden = YES;
-//    BMI_Static_Label.hidden = YES;
-//    Percentage_Waist_Static_label.hidden = YES;
     weight_Static_Label.alpha = 0;
     fat_Static_Label.alpha = 0;
     BMI_Static_Label.alpha = 0;
     Percentage_Waist_Static_label.alpha = 0;
 
+}
+- (void)createCellWithModel:(MyDataModel *)model{
+    timeLabel.text = model.time;
+    [leftImageV sd_setImageWithURL:[NSURL URLWithString:model.leftImageUrl]];
+    [rightImageV sd_setImageWithURL:[NSURL URLWithString:model.rightImageUrl]];
+    
+    heightLabel.text = model.height;
+    weightLabel.text = model.weight;
+    BMILabel.text = model.bmi;
+    if (![model.bmi isEqualToString:@""]) {
+        
+        NSString * weightStr = [NSString numberReserve:model.bmi];
+        if ([weightStr floatValue] < 18.5) {
+            weight_Static_Label.text = @"偏瘦";
+            weight_Static_Label.backgroundColor = [UIColor greenColor];
+            BMI_Static_Label.text = @"偏瘦";
+            BMI_Static_Label.backgroundColor = [UIColor greenColor];
+            
+        }else if ([weightStr floatValue] >= 18.85 && [weightStr floatValue] < 22.9){
+            weight_Static_Label.text = @"标准";
+            weight_Static_Label.backgroundColor = [UIColor greenColor];
+            BMI_Static_Label.text = @"标准";
+            BMI_Static_Label.backgroundColor = [UIColor greenColor];
+        }else{
+            weight_Static_Label.text = @"偏胖";
+            weight_Static_Label.backgroundColor = [UIColor redColor];
+            BMI_Static_Label.text = @"偏胖";
+            BMI_Static_Label.backgroundColor = [UIColor redColor];
+        }
+        weight_Static_Label.hidden = NO;
+        BMI_Static_Label.hidden = NO;
+
+    }else{
+        weight_Static_Label.hidden = YES;
+        BMI_Static_Label.hidden = YES;
+    }
+    
+    waisLabel.text = model.waistline;
+    hipLabel.text = model.hip;
+    
+    fatLabel.text = model.fat;
+    if (![model.fat isEqualToString:@""]) {
+        NSString * fatStr = [NSString numberReserve:model.fat];
+        if ([fatStr floatValue] < 12) {
+            fat_Static_Label.backgroundColor = [UIColor greenColor];
+            fat_Static_Label.text = @"偏低";
+        }else if ([fatStr floatValue] > 18){
+            fat_Static_Label.backgroundColor = [UIColor redColor];
+            fat_Static_Label.text = @"偏高";
+        }else{
+            
+            fat_Static_Label.backgroundColor = [UIColor greenColor];
+            fat_Static_Label.text = @"标准";
+        }
+        fat_Static_Label.hidden = NO;
+
+    }else{
+        fat_Static_Label.hidden = YES;
+    }
+    Percentage_Waist_Hip_Label.text = model.ytbl;
+    if (![model.ytbl isEqualToString:@""]) {
+        NSString * percentage = [NSString numberReserve:model.ytbl];
+        if ([percentage floatValue] >0.9) {
+            Percentage_Waist_Static_label.text = @"偏高";
+            Percentage_Waist_Static_label.backgroundColor = [UIColor redColor];
+        }else{
+            Percentage_Waist_Static_label.text = @"标准";
+            Percentage_Waist_Static_label.backgroundColor = [UIColor greenColor];
+        }
+        Percentage_Waist_Static_label.hidden = NO;
+
+    }else{
+        Percentage_Waist_Static_label.hidden = YES;
+    }
+    legLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",model.lham,model.rham,model.lcrus,model.rcrus];
+    armLabel.text = [NSString stringWithFormat:@"%@\n%@\n%@\n%@",model.ltar,model.rtaqj,model.rtaqj,model.rtaqj];
+    bustLabel.text = [NSString stringWithFormat:@"%@\n%@",model.bust_relax,model.bust_exp];
+    Sebum_triceps_Label.text = model.gstj;
+    Sebum_Pelvis_Label.text = model.kjsy;
+    Sebum_Scapular_Label.text = model.jjxy;
+    Sebum_Stomach_Label.text = model.abdomen;
+    Sebum_Leg_Label.text = model.fat_ham;
+    Sebum_Num_Label.text = model.total;
+    Static_Heart_Label.text = model.static_heart_rate;
+    Blood_Pressure_Label.text = model.blood_pressure;
+    Target_Heart_Label.text = model.target_heart_rate;
+    if (legLabel.text.length != 0) {
+        [UILabel changeLineSpaceForLabel:legLabel WithSpace:10];
+    }
+    if (armLabel.text.length != 0) {
+        [UILabel changeLineSpaceForLabel:armLabel WithSpace:10];
+    }
+    if (bustLabel.text.length != 0) {
+        [UILabel changeLineSpaceForLabel:bustLabel WithSpace:10];
+    }
+    legLabel.textAlignment = NSTextAlignmentCenter;
+    armLabel.textAlignment = NSTextAlignmentCenter;
+    bustLabel.textAlignment = NSTextAlignmentCenter;
+
+    
 }
 - (void)loadData{
     timeLabel.text = @"2000-10-10";
@@ -391,6 +497,7 @@
         legLabel.transform                   = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
         armLabel.transform                   = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
         Sebum_triceps_Label.transform        = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
+        Sebum_Leg_Label.transform            = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
         Sebum_Pelvis_Label.transform         = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
         Sebum_Scapular_Label.transform       = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
         Sebum_Stomach_Label.transform        = CGAffineTransformMakeScale(10.0 / 11 , 10.0/11);
@@ -442,6 +549,8 @@
     
     Static_Heart_Label.textColor = [UIColor grayColor];
     
+    Sebum_Leg_Label.textColor = [UIColor grayColor];
+    
     Blood_Pressure_Label.textColor = [UIColor grayColor];
     
     Target_Heart_Label.textColor = [UIColor grayColor];
@@ -478,7 +587,8 @@
         Static_Heart_Label.transform     = CGAffineTransformMakeScale(1.1 , 1.1);
         Blood_Pressure_Label.transform        = CGAffineTransformMakeScale(1.1 , 1.1);
         Target_Heart_Label.transform     = CGAffineTransformMakeScale(1.1 , 1.1);
-        
+        Sebum_Leg_Label.transform            = CGAffineTransformMakeScale(1.1 , 1.1);
+
         weight_Static_Label.alpha = 1;
         fat_Static_Label.alpha = 1;
         BMI_Static_Label.alpha = 1;
@@ -519,6 +629,8 @@
     
     Sebum_Num_Label.textColor = MAKA_JIN_COLOR;
     
+    Sebum_Leg_Label.textColor = MAKA_JIN_COLOR;
+
     Static_Heart_Label.textColor = MAKA_JIN_COLOR;
     
     Blood_Pressure_Label.textColor = MAKA_JIN_COLOR;

@@ -15,7 +15,7 @@ INTEGER_PROPERTY(func_id)
 STRING_PROPERTY(course_name)
 STRING_PROPERTY(img)
 STRING_PROPERTY(videos)
-
+INTEGER_PROPERTY(class_id)
 STRING_PROPERTY(name)
-
+@property (nonatomic , assign) CGFloat Cell_Height;
 @end

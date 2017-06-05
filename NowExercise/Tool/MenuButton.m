@@ -23,10 +23,10 @@
     static MenuButton * shareMenuButton = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        shareMenuButton = [[self alloc]initWithFrame:CGRectMake(0, 0, 24, 24) buttonType:buttonMenuType buttonStyle:buttonRoundedStyle animateToInitialState:YES];
+        shareMenuButton = [[self alloc]initWithFrame:CGRectMake(0, 0, 24, 24) buttonType:buttonMenuType buttonStyle:buttonPlainStyle animateToInitialState:YES];
         
         [shareMenuButton setTintColor:[UIColor whiteColor]];
-        shareMenuButton.lineRadius = 1.0;
+//        shareMenuButton.lineRadius = 1.0;
     });
     
     return shareMenuButton;

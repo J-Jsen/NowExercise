@@ -37,6 +37,8 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _usImageV.layer.masksToBounds = YES;
+    _usImageV.layer.cornerRadius = 8;
     // Do any additional setup after loading the view from its nib.
 }
 - (IBAction)Call:(id)sender {

@@ -7,13 +7,15 @@
 //
 
 #import "SettingViewController.h"
-
+#import "LoginViewController.h"
 #import "AboutUsViewController.h"
-
-@interface SettingViewController ()<UITableViewDelegate , UITableViewDataSource>
+#import "UserProtocolViewController.h"
+#import "SettingCell.h"
+@interface SettingViewController ()<UITableViewDelegate , UITableViewDataSource , LoginDelegate>
 {
     UITableView * tableV;
     NSMutableArray * dataArr;
+    UIButton * LoginOrOutBtn;
 }
 @end
 
@@ -25,6 +27,7 @@
 //自定制导航栏
 - (void)createNavigationView{
     self.navigationController.navigationBarHidden = NO;
+    self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     [self.mm_drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeNone];
     
     //关闭导航栏毛玻璃效果
@@ -48,17 +51,18 @@
     // Do any additional setup after loading the view from its nib.
 }
 - (void)dataInit{
-    dataArr = [[NSMutableArray alloc]initWithObjects:@"关于我们",@"清除缓存",@"去APP Store评分",@"客服电话:010-65460058", nil];
+    dataArr = [[NSMutableArray alloc]initWithObjects:@"关于我们",@"清除缓存",@"用户协议",@"去APP Store评分",@"客服电话:010-65460058", nil];
     
 }
 - (void)createUI{
+    self.view.backgroundColor = THEMECOLOR;
     tableV = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, SCREEN_H - 64) style:UITableViewStylePlain];
     tableV.dataSource = self;
     tableV.delegate = self;
     tableV.separatorColor = [UIColor grayColor];
-    
+    tableV.backgroundColor = THEMECOLOR;
     [self.view addSubview:tableV];
-    
+    [tableV registerClass:[SettingCell class] forCellReuseIdentifier:@"SetCell"];
     [self createTableViewHeaderAndFooter];
     
 }
@@ -66,12 +70,18 @@
     
     UIView * view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, HEIGHT_6(40) + 10)];
     
-    UIButton * LoginOrOutBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 10, SCREEN_W, HEIGHT_6(40) + 10)];
+    LoginOrOutBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 10, SCREEN_W, HEIGHT_6(40) + 10)];
     LoginOrOutBtn.backgroundColor = MAKA_JIN_COLOR;
     [LoginOrOutBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     LoginOrOutBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
     [LoginOrOutBtn addTarget:self action:@selector(LoginOrOutBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [LoginOrOutBtn setTitle:@"登陆" forState:UIControlStateNormal];
+    NSLog(@"((((((((((((((((((((((((______shifou登录:%d",[HttpRequest judgeWhetherUserLogin]);
+
+    if ([HttpRequest judgeWhetherUserLogin]) {
+        [LoginOrOutBtn setTitle:@"退出登录" forState:UIControlStateNormal];
+    }else{
+        [LoginOrOutBtn setTitle:@"登录" forState:UIControlStateNormal];
+    }
     [view addSubview:LoginOrOutBtn];
     tableV.tableFooterView = view;
     
@@ -85,8 +95,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"11"];
-    cell.detailTextLabel.text = @">";
+    SettingCell *cell = [[SettingCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"SetCell"];
+//    cell.detailTextLabel.text = @">";
+//    cell.imageView.image = [UIImage imageNamed:@"返回"];
+    
     cell.detailTextLabel.font = [UIFont systemFontOfSize:HEIGHT_6(22)];
     cell.textLabel.text = dataArr[indexPath.row];
     cell.textLabel.font = [UIFont systemFontOfSize:HEIGHT_6(15)];
@@ -101,9 +113,10 @@
             cell.detailTextLabel.font = [UIFont systemFontOfSize:HEIGHT_6(15)];
             
         });
-    }
-    if (indexPath.row == 3) {
+    }else if (indexPath.row == 4) {
         cell.detailTextLabel.text = @"";
+    }else{
+        [cell createCellImageStr:@"详情"];
     }
     
     return cell;
@@ -127,7 +140,14 @@
             cell.detailTextLabel.text = [NSString stringWithFormat:@"%.2fMB",[self folderSizeAtPath:cachPath]];
         }
             break;
-        case 2://去app store评分
+            case 2://用户协议
+        {
+            UserProtocolViewController * userprtocol = [[UserProtocolViewController alloc]init];
+            [self.navigationController pushViewController:userprtocol animated:YES];
+            
+        }
+            break;
+        case 3://去app store评分
         {
             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"http://itunes.apple.com/cn/app/guo-dong/id998425416?l=en&mt=8"]]) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/cn/app/guo-dong/id998425416?l=en&mt=8"] options:@{} completionHandler:nil];
@@ -135,7 +155,7 @@
             }
         }
             break;
-        case 3://客服电话
+        case 4://客服电话
         {
             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel:010-65460058"]]) {
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel:010-65460058"] options:@{} completionHandler:nil];
@@ -156,6 +176,38 @@
 #pragma mark 退出登陆或者登陆
 - (void)LoginOrOutBtnClick:(UIButton *)Btn{
     NSLog(@"***********************登陆或退出************************");
+    if ([HttpRequest judgeWhetherUserLogin]) {
+       [SRAlertView sr_showAlertViewWithTitle:@"提示" message:@"您真的要退出么" leftActionTitle:@"确定" rightActionTitle:@"取消" animationStyle:AlertViewAnimationZoom selectAction:^(AlertViewActionType actionType) {
+           if(actionType == AlertViewActionTypeLeft){
+               //退出登录
+               NSURL* url = [NSURL URLWithString:BASEURL];
+               if (url) {
+                   NSArray* cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:url];
+                   for (int i = 0; i < [cookies count]; i++) {
+                       NSHTTPCookie* cookie = (NSHTTPCookie*)[cookies objectAtIndex:i];
+                       [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+                   }
+                   
+                   NSHTTPCookieStorage* sharedHTTPCookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+                   NSArray* cookiesaaa = [sharedHTTPCookieStorage cookiesForURL:[NSURL URLWithString:BASEURL]];
+                   NSLog(@"退出登录 cookies %@",cookiesaaa);
+                   NSLog(@"******************************退出登录%d",[HttpRequest judgeWhetherUserLogin]);
+               }
+
+               [HttpRequest showAlertWithTitle:@"退出成功"];
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [LoginOrOutBtn setTitle:@"登录" forState:UIControlStateNormal];
+//                   [[NSNotificationCenter defaultCenter] postNotificationName:@"HomeViewRefresh" object:nil];
+
+               });
+           }
+                }];
+    }else{
+        LoginViewController * login = [[LoginViewController alloc]init];
+        login.back = NO;
+        login.delegate = self;
+        [self presentViewController:login animated:YES completion:nil];
+    }
 }
 //清除缓存
 #pragma mark - 获取缓存大小
@@ -165,7 +217,6 @@
     if (![manager fileExistsAtPath:folderPath]) {
         return 0;
     }
-    
     NSEnumerator* childFilesEnumerator = [[manager subpathsAtPath:folderPath] objectEnumerator];
     NSString* fileName = nil;
     long long folderSize = 0;
@@ -200,6 +251,9 @@
             [fileManager removeItemAtPath:absolutePath error:nil];
         }
     }
+}
+- (void)login{
+    [LoginOrOutBtn setTitle:@"退出登录" forState:UIControlStateNormal];
 }
 /*
 #pragma mark - Navigation
