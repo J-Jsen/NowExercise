@@ -82,6 +82,8 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     MJRefreshBackNormalFooter * footer = [MJRefreshBackNormalFooter forwardingTargetForSelector:nil];
                     [footer setTitle:@"到底啦..." forState:MJRefreshStateIdle];
+                    footer.stateLabel.textColor = MAKA_JIN_COLOR;
+
                     tableV.mj_footer = footer;
                 });
             }
@@ -104,8 +106,14 @@
     tableV.tableFooterView = [[UIView alloc]init];
     [self.view addSubview:tableV];
 
-    tableV.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerLoadData)];
-    tableV.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(footerLoadData)];
+     MJRefreshNormalHeader * header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerLoadData)];
+    header.stateLabel.textColor = MAKA_JIN_COLOR;
+    header.lastUpdatedTimeLabel.textColor = MAKA_JIN_COLOR;
+    tableV.mj_header = header;
+
+    MJRefreshBackNormalFooter * footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(footerLoadData)];
+    footer.stateLabel.textColor = MAKA_JIN_COLOR;
+    tableV.mj_footer = footer;
 }
 - (void)headerLoadData{
     page = 0;
@@ -197,12 +205,13 @@
 
 }
 - (void)EvaluateSuceess:(NSUInteger)index{
-        OrderModel * model = dataArr[index];
-        model.gd_status = 4;
+    OrderModel * model = dataArr[index];
+    model.gd_status = 4;
     model.order_status = @"已完成";
-        NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:index];
-        [tableV reloadSections:indexSet withRowAnimation:UITableViewRowAnimationLeft];
-
+    NSIndexSet *indexSet=[[NSIndexSet alloc]initWithIndex:index];
+    [tableV reloadSections:indexSet withRowAnimation:UITableViewRowAnimationLeft];
+    NSIndexPath * indexpath = [NSIndexPath indexPathForRow:index inSection:0];
+    [tableV reloadRowsAtIndexPaths:@[indexpath] withRowAnimation:UITableViewRowAnimationNone];
 }
 - (void)dealloc{
     [self.navigationController setNavigationBarHidden:YES animated:YES];

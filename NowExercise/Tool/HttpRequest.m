@@ -199,7 +199,6 @@
     hud.labelColor = [UIColor blackColor];
     hud.minSize = CGSizeMake(SCREEN_W * 0.5, HEIGHT_6(90));
     [hud hide:YES afterDelay:2];
-
 }
 //判断是否登录
 + (BOOL)judgeWhetherUserLogin {

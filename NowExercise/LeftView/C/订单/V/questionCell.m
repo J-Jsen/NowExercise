@@ -24,7 +24,6 @@
         self.textLabel.textColor = [UIColor blackColor];
         imageV = [[UIImageView alloc]init];
         [self addSubview:imageV];
-        imageV.backgroundColor = [UIColor redColor];
         imageV.image = [UIImage imageNamed:@"未选中问题.png"];
         imageV.contentMode = UIViewContentModeRight;
         [imageV mas_makeConstraints:^(MASConstraintMaker *make) {

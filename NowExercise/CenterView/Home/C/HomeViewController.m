@@ -43,6 +43,7 @@
     NSArray * data;
     BOOL first;
     BOOL LOAD;
+    MBProgressHUD * hud;
 }
 /**
  自定制导航栏
@@ -129,6 +130,7 @@
             //是否有弹窗(首次课99元的弹窗)
             NSDictionary * firstDic = dict[@"first_info"];
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self.TableV.mj_header endRefreshing];
                 [self createTableViewBannerView];
                 [self.TableV reloadData];
 
@@ -143,37 +145,13 @@
     }];
     
 }
-
 #pragma mark 初始化数据
 - (void)InitData{
     data = [NSArray arrayWithObjects:@"登陆",@"welcome",@"登陆",@"welcome",@"登陆",@"welcome",@"登陆", nil];
     self.dataArr = [[NSMutableArray alloc]init];
     page_index = 0;
 }
-#pragma mark 加载数据
-- (void)loadPersent{
-    
-    NSString * url = [NSString stringWithFormat:@"%@api/?method=diary.personal_list",BASEURL];
-    [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary *responseObject) {
-        if ([[responseObject objectForKey:@"rc"] integerValue] == 0) {
-            NSArray * arr = responseObject[@"data"];
-            if (arr.count) {
-                NSDictionary * dic = arr[0];
-                NSString * person_id = dic[@"package_id"];
-                [Default setObject:person_id forKey:@"person_id"];
-            }else{
-                [Default setObject:@"" forKey:@"person_id"];
-            }
-        }else{
-            [Default setBool:NO forKey:@"login"];
-            LoginViewController * login = [[LoginViewController alloc]init];
-            login.LoginBtn.hidden = NO;
-            [self presentViewController:login animated:YES completion:nil];
-        }
-    } andfailBlock:^(NSError *error) {
-        
-    }];
-}
+
 - (void)createTableViewBannerView{
     bannerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, HEIGHT_6(350))];
     
@@ -210,6 +188,14 @@
     self.TableV.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.TableV];
     
+    MJRefreshStateHeader * header = [MJRefreshStateHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerRefresh)];
+    [header setTitle:@"下拉刷新" forState:MJRefreshStateIdle];
+    [header setTitle:@"松开刷新" forState:MJRefreshStatePulling];
+    [header setTitle:@"加载中..." forState:MJRefreshStateRefreshing];
+    header.stateLabel.textColor = MAKA_JIN_COLOR;
+    header.lastUpdatedTimeLabel.textColor = MAKA_JIN_COLOR;
+    self.TableV.mj_header = header;
+    
     self.ExerciseBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, WIDTH_6(244), HEIGHT_6(40))];
     self.ExerciseBtn.center = CGPointMake(SCREEN_W / 2, SCREEN_H - WIDTH_6(49 / 2.0));
     [self.ExerciseBtn setTitle:@"约     炼" forState:UIControlStateNormal];
@@ -219,22 +205,21 @@
     self.ExerciseBtn.layer.masksToBounds = YES;
     self.ExerciseBtn.backgroundColor = COLOR(227, 209, 191);
     [self.ExerciseBtn addTarget:self action:@selector(ExerciseBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    
     [self.view addSubview:self.ExerciseBtn];
-    
-    
 }
 - (void)CreatNavigationView{
     
     self.NavigationV = [[NavigationView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, 64) andtitle:@"立 炼"];
     self.NavigationV.delegate = self;
     [self.view addSubview:self.NavigationV];
-    
-    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+#pragma mark 下拉从新加载页面
+- (void)headerRefresh{
+    [self Reloddata];
 }
 #pragma mark 约炼按钮点击事件
 - (void)ExerciseBtnClick:(UIButton *)ExerciseBtn{
@@ -520,6 +505,20 @@
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"location" object:nil];
 }
+
+- (void)showAlertWithTitle:(NSString *)title {
+    hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].keyWindow animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    //    hud.activityIndicatorColor = [UIColor blueColor];
+    hud.color = [UIColor blackColor];
+    hud.labelText = title;
+    hud.labelFont = [UIFont boldSystemFontOfSize:17];
+    hud.dimBackground = YES;
+    [hud setColor:MAKA_JIN_COLOR];
+    hud.labelColor = [UIColor blackColor];
+    hud.minSize = CGSizeMake(SCREEN_W * 0.5, HEIGHT_6(90));
+}
+
 /*
 #pragma mark - Navigation
 

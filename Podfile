@@ -1,4 +1,4 @@
-platform :ios, '10.2'
+platform :ios, '9.0'
 target "NowExercise" do
 pod 'pop', '~> 1.0.9'
 pod 'Masonry', '~> 1.0.0'

@@ -152,7 +152,7 @@
     coachLabel.text = model.coach_info[@"username"];
     [coachImageV sd_setImageWithURL:[NSURL URLWithString:model.coach_info[@"headimg"]]];
     if (model.gd_status != 7) {
-//        evaluateBtn.hidden = YES;
+        evaluateBtn.hidden = YES;
     }
     
 }

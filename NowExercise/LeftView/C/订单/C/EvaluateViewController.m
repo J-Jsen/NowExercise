@@ -27,7 +27,7 @@
     NSInteger star;
     NSString * adviseStr;
 //    PostModel * postmodel;
-    BOOL isStar;
+//    BOOL isStar;
 }
 @end
 
@@ -82,28 +82,31 @@
 - (void)initData{
     dataArr = [[NSMutableArray alloc]init];
 //    postmodel = [[PostModel alloc]init];
-    
+    adviseStr = @"";
     star = 0;
 }
 #pragma mark 加载数据
 - (void)loadData{
-//    NSString * url = [NSString stringWithFormat:@"%@",BASEURL];
-    NSString * url = @"http://192.168.1.90:5050/api/?method=order.reasons";
+    NSString * url = [NSString stringWithFormat:@"%@api/?method=order.reasons",BASEURL];
+//    NSString * url = @"http://192.168.1.90:5050/api/?method=order.reasons";
     [HttpRequest GetHttpwithUrl:url parameters:nil andsuccessBlock:^(NSDictionary * _Nonnull responseObject) {
-        NSLog(@"问题数据::::::*((((()))))))%@",responseObject);
         if ([[responseObject objectForKey:@"rc"] integerValue] == 0) {
             //成功返回数据
             NSArray * arr = responseObject[@"data"];
             EvaluateModel * model = [[EvaluateModel alloc]init];
             model.content = @"是否出现以下现象:";
             model.ID = 100;
+            [dataArr addObject:model];
             for (NSDictionary * dic in arr) {
                 EvaluateModel * model = [[EvaluateModel alloc]init];
                 [model setValuesForKeysWithDictionary:dic];
                 [dataArr addObject:model];
             }
-            
-//            [tableV reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSIndexSet * set = [NSIndexSet indexSetWithIndex:0];
+                [tableV reloadSections:set withRowAnimation:UITableViewRowAnimationAutomatic];
+
+            });
         }
         
     } andfailBlock:^(NSError * _Nonnull error) {
@@ -161,7 +164,7 @@
     [tabelViewHeaderV addSubview:time];
     
     NSString * t = [NSString dateToString:[NSString stringWithFormat:@"%ld",self.model.pre_time] Format:@"yyyy年MM月dd日 hh:mm"];
-    NSString * t1 = [NSString dateToString:[NSString stringWithFormat:@"%ld",self.model.pre_time] Format:@"hh:mm"];
+    NSString * t1 = [NSString dateToString:[NSString stringWithFormat:@"%ld",self.model.pre_time + 3600] Format:@"hh:mm"];
     NSString * classtime = [NSString stringWithFormat:@"%@-%@",t,t1];
     
     time.text = classtime;
@@ -205,7 +208,7 @@
 #pragma mark tableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     if (section == 0) {
-        if (!isStar) {
+        if (star != 5) {
             return dataArr.count;
         }else{
             return 0;
@@ -222,6 +225,7 @@
         }
         if (indexPath.row == 0) {
             cell.userInteractionEnabled = NO;
+            [cell imageViewHide];
         }
         cell.textLabel.text = model.content;
     }
@@ -277,21 +281,15 @@
 }
 #pragma mark StarViewDelegate
 - (void)StarViewSelectIndex:(NSInteger)index{
-    NSLog(@"星级为:%ld",index);
-//    postmodel.star = [NSString stringWithFormat:@"%ld",index];
     star = index;
-    if (index == 5) {
-        isStar = YES;
-    }else{
-        isStar = NO;
-    }
     NSIndexSet * set = [NSIndexSet indexSetWithIndex:0];
     [tableV reloadSections:set withRowAnimation:UITableViewRowAnimationAutomatic];
     
 }
 - (void)SaveEvaluateClick:(UIButton *)saveBtn{
     //上传评价
-    
+        EvaluateCell * header = (EvaluateCell *)[tableV headerViewForSection:1];
+        [header.textView resignFirstResponder];
     if (star == 0) {
         [HttpRequest showAlertWithTitle:@"请选择评价星级"];
         return;
@@ -300,33 +298,36 @@
         [HttpRequest showAlertWithTitle:@"评价内容不能为空"];
         return;
     }
-    NSLog(@"上传中");
-    NSMutableArray * arr = [NSMutableArray arrayWithObjects:@"1",@"2", nil];
-//    for (EvaluateModel * model in dataArr) {
-//        if (model.select) {
-//            [arr addObject:[NSString stringWithFormat:@"%ld",model.ID]];
-//        }
-//    }
-    NSMutableDictionary * postDic = [[NSMutableDictionary alloc]init];
-    [postDic setObject:arr forKey:@"id"];
-    [postDic setObject:@(star) forKey:@"star"];
+//    NSLog(@"上传中");
     NSMutableDictionary * dic = [[NSMutableDictionary alloc]init];
-    [dic setObject:arr forKey:@"id"];
-    [dic setObject:@"222" forKey:@"info"];
-    [dic setObject:@(3) forKey:@"star"];
-    NSString * url = [NSString stringWithFormat:@"%@api/?method=order.feed&order_id=%@",BASEURL,_model.order_id];
+    //未满5星问题
+    if (star != 5) {
+        NSMutableArray * arr = [[NSMutableArray alloc]init];
+            for (EvaluateModel * model in dataArr) {
+                if (model.select) {
+                    [arr addObject:[NSString stringWithFormat:@"%ld",(long)model.ID]];
+                }
+            }
+        [dic setObject:arr forKey:@"id"];
+    }
+    //评价
+    [dic setObject:adviseStr forKey:@"info"];
+    //星级
+    [dic setObject:@(star) forKey:@"star"];
+    NSString * url = [NSString stringWithFormat:@"%@api/?method=order.new_feed&order_id=%@",BASEURL,_model.order_id];
     WeakSelf
-//    NSString * url = @"http://www.antson.cn:8080/stars/";
-//    NSString * url = @"http://192.168.1.90:5050/api/?method=order.feed&order_id=141706054D5E988";
+//    NSString * url = [NSString stringWithFormat:@"http://192.168.1.90:5050/api/?method=order.new_feed&order_id=14170607EEE0BC5"];
+//    NSString * url = @"http://192.168.1.90:5050/api/?method=order.feed&order_id=14170605030FBB1";
     [HttpRequest PostHttpwithUrl:url andparameters:dic andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
-        [SRAlertView sr_showAlertViewWithTitle:@"提示" message:@"订单评价成功" leftActionTitle:@"确定" rightActionTitle:nil animationStyle:AlertViewAnimationZoom selectAction:^(AlertViewActionType actionType) {
+        NSLog(@"网址:%@\n参数:%@",url,dic);
+
             dispatch_async(dispatch_get_main_queue(), ^{
+                [HttpRequest showAlertWithTitle:@"订单评价成功"];
                 if ([self.delegate respondsToSelector:@selector(EvaluateSuceess:)]) {
                     [self.delegate EvaluateSuceess:self.index];
                 }
                 [weakSelf.navigationController popViewControllerAnimated:YES];
             });
-        }];
     } andfailBlock:^(NSError *error) {
         NSLog(@"失败");
     }];
@@ -361,26 +362,29 @@
     }];
 }
 
-
-- (void)SaveBtnClick{
-    if (self.TextView.text.length == 0) {
-        [HttpRequest showAlertWithTitle:@"评价内容不能为空"];
-    }else{
-        NSString * text = [NSString CanUseString:self.TextView.text];
-        NSString * url = [NSString stringWithFormat:@"%@api/?method=order.feed&order_id=%@&content=%@",BASEURL,self.order_id,text];
-        [HttpRequest PostHttpwithUrl:url andparameters:nil andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [HttpRequest showAlertWithTitle:@"订单评价成功"];
-                if ([self.delegate respondsToSelector:@selector(EvaluateSuceess:)]) {
-                    [self.delegate EvaluateSuceess:self.index];
-                }
-                [self.navigationController popViewControllerAnimated:YES];
-            });
-        } andfailBlock:^(NSError *error) {
-            
-        }];
-    }
-}
+//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+//    EvaluateCell * header = (EvaluateCell *)[tableV headerViewForSection:1];
+//    [header.textView resignFirstResponder];
+//}
+//- (void)SaveBtnClick{
+//    if (self.TextView.text.length == 0) {
+//        [HttpRequest showAlertWithTitle:@"评价内容不能为空"];
+//    }else{
+//        NSString * text = [NSString CanUseString:self.TextView.text];
+//        NSString * url = [NSString stringWithFormat:@"%@api/?method=order.feed&order_id=%@&content=%@",BASEURL,self.order_id,text];
+//        [HttpRequest PostHttpwithUrl:url andparameters:nil andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [HttpRequest showAlertWithTitle:@"订单评价成功"];
+//                if ([self.delegate respondsToSelector:@selector(EvaluateSuceess:)]) {
+//                    [self.delegate EvaluateSuceess:self.index];
+//                }
+//                [self.navigationController popViewControllerAnimated:YES];
+//            });
+//        } andfailBlock:^(NSError *error) {
+//            
+//        }];
+//    }
+//}
 /*
 #pragma mark - Navigation
 

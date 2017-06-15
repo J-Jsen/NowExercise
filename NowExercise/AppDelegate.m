@@ -86,6 +86,7 @@
     /**************************初始化app*********************/
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
 #pragma mark 判断是否是新版本
+    WeakSelf
     NSUserDefaults * defaul                = [NSUserDefaults standardUserDefaults];
     NSDictionary * infoDictionary          = [[NSBundle mainBundle] infoDictionary];
     CFShow((__bridge CFTypeRef)(infoDictionary));
@@ -105,11 +106,16 @@
         LoginViewController * loginView     = [[LoginViewController alloc]init];
         loginView.back = YES;
         welcomeView.WelcomeChangeRootView   = ^{
-            self.window.rootViewController  = loginView;
             [defaul setObject:app_version forKey:@"app_version"];
+            //判断更新后是否登录
+            if ([HttpRequest judgeWhetherUserLogin]) {
+                weakSelf.window.rootViewController = [self mmdrawerView];
+            }else{
+                weakSelf.window.rootViewController  = loginView;
+            }
         };
         loginView.LoginChangeRootView       = ^{
-            self.window.rootViewController  = [self mmdrawerView];
+            weakSelf.window.rootViewController  = [self mmdrawerView];
             [self.window makeKeyAndVisible];
         };
     }
@@ -168,6 +174,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 }
@@ -230,6 +238,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
     NSDictionary * userInfo = response.notification.request.content.userInfo;
     if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
+        [UIApplication sharedApplication].applicationIconBadgeNumber++;
+
     }
     completionHandler();  // 系统要求执行这个方法
 }

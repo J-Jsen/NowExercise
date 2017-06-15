@@ -56,7 +56,6 @@
     collectionV.dataSource = self;
     [collectionV registerClass:[DetailBodyCollectionViewCell class] forCellWithReuseIdentifier:DETAILBODY_CELL];
     [self addSubview:collectionV];
-//    collectionV.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(refreshCollectionV)];
     [collectionV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];

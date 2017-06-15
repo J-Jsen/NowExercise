@@ -33,7 +33,7 @@
  @param textString 验证的字符串
  @return 返回是否
  */
-+ (BOOL)phoneValidateNumber:(NSString *) textString;
++ (BOOL)phoneValidateNumber:(NSString *)textString;
 + (void)showAlert;
 + (void)showAlertWithTitle:(NSString *)title;
 + (BOOL)judgeWhetherUserLogin;

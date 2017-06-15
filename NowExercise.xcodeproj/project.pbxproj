@@ -1345,7 +1345,7 @@
 					63B41AC91DB9F33100B7F60D = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = W3F8ZLM4DL;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
@@ -1698,7 +1698,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Alipay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/CmbWallet",
 				);
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1710,16 +1709,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/NowExercise/Tool/JPush",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Alipay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/ApplePay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/BfbWap",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/CmbWallet",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Fqlpay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Jdpay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Mmdpay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Qgbc",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/QQWallet",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/UnionPay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Yeepay",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Dependencies/Network",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Dependencies/WebView",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib",
@@ -1727,8 +1717,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.guodong.user;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "08a7f90c-d296-4025-b9d2-921407edbea0";
-				PROVISIONING_PROFILE_SPECIFIER = "客户端开发配置文件10.0";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1740,13 +1730,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = NowExercise/NowExercise.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = W3F8ZLM4DL;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Alipay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/CmbWallet",
 				);
 				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1758,16 +1747,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/NowExercise/Tool/JPush",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Alipay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/ApplePay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/BfbWap",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/CmbWallet",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Fqlpay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Jdpay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Mmdpay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Qgbc",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/QQWallet",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/UnionPay",
-					"$(PROJECT_DIR)/NowExercise/Tool/lib/Channels/Yeepay",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Dependencies/Network",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib/Dependencies/WebView",
 					"$(PROJECT_DIR)/NowExercise/Tool/lib",
@@ -1775,8 +1755,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.guodong.user;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "60015477-755e-498b-bd11-4e5a605713c5";
-				PROVISIONING_PROFILE_SPECIFIER = "客户端发布配置文件10.0";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

@@ -34,12 +34,24 @@
     return self;
 }
 
-- (void)textViewDidEndEditing:(UITextView *)textView{
+- (void)textViewDidBeginEditing:(UITextView *)textView{
     if (self.textView && [self.delegate respondsToSelector:@selector(Advise:)]) {
         [self.delegate Advise:textView.text];
     }
 }
+- (void)textViewDidChange:(UITextView *)textView{
+    if (self.textView && [self.delegate respondsToSelector:@selector(Advise:)]) {
+        [self.delegate Advise:textView.text];
+    }
 
+}
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.textView resignFirstResponder];
+}
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView{
+    [textView resignFirstResponder];
+    return YES;
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

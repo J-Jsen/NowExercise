@@ -319,7 +319,7 @@
             default:
                 break;
         }
-        [HttpRequest PostHttpwithUrl:url andparameters:requestdict andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
+        [HttpRequest postHttpwithUrl:url andparameters:requestdict andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
             if ([[responseObject objectForKey:@"rc"] integerValue] == 0) {
                 NSData * data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
                 NSString* charge = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -390,7 +390,7 @@
             default:
                 break;
         }
-        [HttpRequest PostHttpwithUrl:url andparameters:requestdict andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
+        [HttpRequest postHttpwithUrl:url andparameters:requestdict andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
             if ([[responseObject objectForKey:@"rc"] integerValue] == 0) {
                 NSData * data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
                 NSString* charge = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];

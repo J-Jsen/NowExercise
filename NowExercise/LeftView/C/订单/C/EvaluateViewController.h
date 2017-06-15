@@ -18,7 +18,6 @@
 @property (nonatomic , strong) OrderModel * model;
 
 
-@property (weak, nonatomic) IBOutlet UITextView *TextView;
 STRING_PROPERTY(order_id)
 INTEGER_PROPERTY(index)
 @property (nonatomic , weak) id<EvaluateViewControllerDelegate> delegate;

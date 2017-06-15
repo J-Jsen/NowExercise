@@ -84,7 +84,7 @@
                                    @"registerID"   : [JPUSHService registrationID]?[JPUSHService registrationID]:@""};
             NSString * loginUrl = [NSString stringWithFormat:@"%@userlogin/",BASEURL];
             WeakSelf
-            [HttpRequest PostHttpwithUrl:loginUrl andparameters:dic andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
+            [HttpRequest postHttpwithUrl:loginUrl andparameters:dic andProgress:nil andsuccessBlock:^(NSDictionary *responseObject) {
                 [Default setBool:YES forKey:@"login"];
                 [Default setObject:weakSelf.numberTF.text forKey:@"phone"];
                 
@@ -167,7 +167,7 @@
                                        @"sign" : MDString,
                                        @"time" : timeString
                                        };
-        [HttpRequest PostHttpwithUrl:getMessageUrl andparameters:messagedict andProgress:^(NSProgress *progress) {
+        [HttpRequest postHttpwithUrl:getMessageUrl andparameters:messagedict andProgress:^(NSProgress *progress) {
             
         } andsuccessBlock:^(NSDictionary * responseObject) {
             NSLog(@"%@",responseObject);
